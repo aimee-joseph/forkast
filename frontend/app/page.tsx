@@ -1,65 +1,242 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 export default function Home() {
+  const router = useRouter();
+  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [restaurantName, setRestaurantName] = useState("");
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function checkSession() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        router.push("/dashboard");
+      }
+    }
+    checkSession();
+  }, [router]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccessMessage("");
+    setLoading(true);
+
+    try {
+      if (mode === "signup") {
+        if (!restaurantName.trim()) {
+          throw new Error("Restaurant name is required");
+        }
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              restaurant_name: restaurantName,
+            },
+          },
+        });
+
+        if (signUpError) throw signUpError;
+
+
+        setSuccessMessage("Check your email to confirm your account.");
+      } else {
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (signInError) throw signInError;
+        router.push("/dashboard");
+      }
+    } catch (err: any) {
+      setError(err.message || "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getInputStyle = (field: string): React.CSSProperties => ({
+    width: "100%",
+    boxSizing: "border-box",
+    padding: "10px 12px",
+    borderRadius: "8px",
+    border: `1px solid ${focusedField === field ? "#f59e0b" : "#e5e5e5"}`,
+    fontSize: "14px",
+    marginBottom: "12px",
+    outline: "none",
+    fontFamily: "inherit",
+    transition: "border-color 0.2s",
+  });
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div
+      style={{
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: "#0f1117",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: "#ffffff",
+          borderRadius: "12px",
+          padding: "36px",
+          width: "380px",
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "18px",
+            fontWeight: 500,
+            color: "#0f1117",
+            margin: "0 0 4px 0",
+          }}
+        >
+          Forkast
+        </h1>
+        <p
+          style={{
+            color: "#888888",
+            fontSize: "13px",
+            margin: "0 0 24px 0",
+          }}
+        >
+          {mode === "login" ? "Sign in to your account" : "Create your account"}
+        </p>
+
+        {successMessage ? (
+          <div
+            style={{
+              color: "#155724",
+              backgroundColor: "#d4edda",
+              border: "1px solid #c3e6cb",
+              padding: "12px",
+              borderRadius: "8px",
+              fontSize: "14px",
+              textAlign: "center",
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            {successMessage}
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            {mode === "signup" && (
+              <input
+                type="text"
+                placeholder="Restaurant Name"
+                value={restaurantName}
+                onChange={(e) => setRestaurantName(e.target.value)}
+                onFocus={() => setFocusedField("restaurant")}
+                onBlur={() => setFocusedField(null)}
+                style={getInputStyle("restaurant")}
+                required
+              />
+            )}
+
+            <input
+              type="email"
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onFocus={() => setFocusedField("email")}
+              onBlur={() => setFocusedField(null)}
+              style={getInputStyle("email")}
+              required
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onFocus={() => setFocusedField("password")}
+              onBlur={() => setFocusedField(null)}
+              style={getInputStyle("password")}
+              required
+            />
+
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                width: "100%",
+                backgroundColor: "#f59e0b",
+                color: "#ffffff",
+                border: "none",
+                padding: "11px",
+                borderRadius: "8px",
+                fontSize: "14px",
+                fontWeight: 500,
+                cursor: loading ? "not-allowed" : "pointer",
+                opacity: loading ? 0.7 : 1,
+                transition: "opacity 0.2s",
+              }}
+            >
+              {loading ? "Please wait..." : mode === "login" ? "Sign In" : "Sign Up"}
+            </button>
+          </form>
+        )}
+
+        {error && (
+          <div style={{ color: "#ef4444", fontSize: "12px", marginTop: "8px" }}>
+            {error}
+          </div>
+        )}
+
+        {!successMessage && (
+          <div
+            style={{
+              marginTop: "20px",
+              textAlign: "center",
+              fontSize: "13px",
+              color: "#888888",
+            }}
           >
-            Documentation
-          </a>
-        </div>
-      </main>
+            {mode === "login" ? (
+              <span>
+                Don't have an account?{" "}
+                <span
+                  onClick={() => {
+                    setMode("signup");
+                    setError("");
+                  }}
+                  style={{ color: "#f59e0b", cursor: "pointer", fontWeight: 500 }}
+                >
+                  Sign up
+                </span>
+              </span>
+            ) : (
+              <span>
+                Already have an account?{" "}
+                <span
+                  onClick={() => {
+                    setMode("login");
+                    setError("");
+                  }}
+                  style={{ color: "#f59e0b", cursor: "pointer", fontWeight: 500 }}
+                >
+                  Sign in
+                </span>
+              </span>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
