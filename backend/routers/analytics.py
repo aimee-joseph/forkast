@@ -32,14 +32,14 @@ async def get_summary(user_id: str):
 
     reports = resp.data
     if not reports:
-        return {"total_reports": 0, "combined_total_revenue": 0.0, "most_recent_report_date": None}
+        return {"total_reports": 0, "total_orders_analysed": 0, "most_recent_report_date": None}
 
-    combined_total_revenue = round(sum(r.get("total_revenue", 0) or 0 for r in reports), 2)
+    total_orders_analysed = sum(r.get("total_orders", 0) or 0 for r in reports)
     most_recent_report_date = reports[0].get("created_at")
 
     return {
         "total_reports": len(reports),
-        "combined_total_revenue": combined_total_revenue,
+        "total_orders_analysed": total_orders_analysed,
         "most_recent_report_date": most_recent_report_date,
     }
 
@@ -138,4 +138,19 @@ async def get_report(report_id: str):
         "revenue_by_day_of_week": revenue_by_day_of_week,
         "daily_revenue": daily_revenue,
     }
+
+
+@router.delete("/report/{report_id}")
+async def delete_report(report_id: str):
+    try:
+        supabase.table("insights").delete().eq("report_id", report_id).execute()
+        supabase.table("sales_records").delete().eq("report_id", report_id).execute()
+        resp = supabase.table("reports").delete().eq("id", report_id).execute()
+        if not resp.data:
+            raise HTTPException(status_code=404, detail="Report not found")
+        return {"success": True}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete report: {e}")
 

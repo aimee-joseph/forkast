@@ -8,6 +8,7 @@ import RevenueChart from "@/components/RevenueChart";
 import DayOfWeekChart from "@/components/DayOfWeekChart";
 import MenuPerformance from "@/components/MenuPerformance";
 import AIInsights from "@/components/AIInsights";
+import { exportReportPDF } from "@/lib/exportPDF";
 
 interface Item {
   item_name: string;
@@ -50,6 +51,7 @@ export default function ReportDashboard() {
   const [insights, setInsights] = useState<Insights | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const [error, setError] = useState("");
 
   const reportIdStr = (Array.isArray(report_id) ? report_id[0] : report_id) ?? "";
@@ -93,6 +95,21 @@ export default function ReportDashboard() {
       setError(err.message || "Failed to generate insights");
     } finally {
       setGenerating(false);
+    }
+  };
+
+  const handleExport = async () => {
+    if (!report) return;
+    setExporting(true);
+    try {
+      await exportReportPDF(
+        "report-export-area",
+        `forkast-${report.filename.replace(".csv", "")}-report.pdf`
+      );
+    } catch (err: any) {
+      setError(err.message || "Failed to export PDF");
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -162,7 +179,8 @@ export default function ReportDashboard() {
 
         <div style={{ display: "flex", gap: "12px" }}>
           <button
-            onClick={() => console.log("Export report:", reportIdStr)}
+            onClick={handleExport}
+            disabled={exporting}
             style={{
               border: "0.5px solid #e5e5e5",
               backgroundColor: "#ffffff",
@@ -171,10 +189,11 @@ export default function ReportDashboard() {
               borderRadius: "8px",
               fontSize: "13px",
               fontWeight: 500,
-              cursor: "pointer",
+              cursor: exporting ? "not-allowed" : "pointer",
+              opacity: exporting ? 0.7 : 1,
             }}
           >
-            Export
+            {exporting ? "Exporting..." : "Export"}
           </button>
           <button
             onClick={handleGenerateInsights}
@@ -200,217 +219,219 @@ export default function ReportDashboard() {
         </div>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: "20px",
-          marginBottom: "32px",
-        }}
-      >
+      <div id="report-export-area">
         <div
           style={{
-            backgroundColor: "#ffffff",
-            borderRadius: "10px",
-            padding: "20px 24px",
-            border: "0.5px solid #ebebeb",
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: "20px",
+            marginBottom: "32px",
           }}
         >
           <div
             style={{
-              fontSize: "11px",
-              color: "#888888",
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              marginBottom: "8px",
+              backgroundColor: "#ffffff",
+              borderRadius: "10px",
+              padding: "20px 24px",
+              border: "0.5px solid #ebebeb",
             }}
           >
-            Total Revenue
+            <div
+              style={{
+                fontSize: "11px",
+                color: "#888888",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                marginBottom: "8px",
+              }}
+            >
+              Total Revenue
+            </div>
+            <div style={{ fontSize: "24px", fontWeight: 500, color: "#0f1117" }}>
+              {formatRevenue(report.total_revenue)}
+            </div>
           </div>
-          <div style={{ fontSize: "24px", fontWeight: 500, color: "#0f1117" }}>
-            {formatRevenue(report.total_revenue)}
+
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              borderRadius: "10px",
+              padding: "20px 24px",
+              border: "0.5px solid #ebebeb",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "11px",
+                color: "#888888",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                marginBottom: "8px",
+              }}
+            >
+              Total Orders
+            </div>
+            <div style={{ fontSize: "24px", fontWeight: 500, color: "#0f1117" }}>
+              {report.total_orders}
+            </div>
+          </div>
+
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              borderRadius: "10px",
+              padding: "20px 24px",
+              border: "0.5px solid #ebebeb",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "11px",
+                color: "#888888",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                marginBottom: "8px",
+              }}
+            >
+              Avg Order Value
+            </div>
+            <div style={{ fontSize: "24px", fontWeight: 500, color: "#0f1117" }}>
+              {formatRevenue(report.avg_order_value)}
+            </div>
+          </div>
+
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              borderRadius: "10px",
+              padding: "20px 24px",
+              border: "0.5px solid #ebebeb",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "11px",
+                color: "#888888",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                marginBottom: "8px",
+              }}
+            >
+              Peak Day
+            </div>
+            <div style={{ fontSize: "24px", fontWeight: 500, color: "#0f1117" }}>
+              {report.peak_day}
+            </div>
           </div>
         </div>
 
         <div
           style={{
-            backgroundColor: "#ffffff",
-            borderRadius: "10px",
-            padding: "20px 24px",
-            border: "0.5px solid #ebebeb",
+            display: "grid",
+            gridTemplateColumns: "3fr 2fr",
+            gap: "16px",
+            marginBottom: "16px",
           }}
         >
           <div
             style={{
-              fontSize: "11px",
-              color: "#888888",
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              marginBottom: "8px",
+              backgroundColor: "#ffffff",
+              borderRadius: "12px",
+              padding: "20px 24px",
+              border: "0.5px solid #ebebeb",
             }}
           >
-            Total Orders
+            <div
+              style={{
+                fontSize: "11px",
+                fontWeight: 500,
+                color: "#888888",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                marginBottom: "16px",
+              }}
+            >
+              Daily Revenue
+            </div>
+            <RevenueChart data={report.daily_revenue} />
           </div>
-          <div style={{ fontSize: "24px", fontWeight: 500, color: "#0f1117" }}>
-            {report.total_orders}
+
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              borderRadius: "12px",
+              padding: "20px 24px",
+              border: "0.5px solid #ebebeb",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "11px",
+                fontWeight: 500,
+                color: "#888888",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                marginBottom: "16px",
+              }}
+            >
+              Revenue by Day of Week
+            </div>
+            <DayOfWeekChart data={report.revenue_by_day_of_week} />
           </div>
         </div>
 
         <div
           style={{
-            backgroundColor: "#ffffff",
-            borderRadius: "10px",
-            padding: "20px 24px",
-            border: "0.5px solid #ebebeb",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "16px",
           }}
         >
           <div
             style={{
-              fontSize: "11px",
-              color: "#888888",
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              marginBottom: "8px",
+              backgroundColor: "#ffffff",
+              borderRadius: "12px",
+              padding: "20px 24px",
+              border: "0.5px solid #ebebeb",
             }}
           >
-            Avg Order Value
+            <div
+              style={{
+                fontSize: "11px",
+                fontWeight: 500,
+                color: "#888888",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                marginBottom: "16px",
+              }}
+            >
+              Menu Performance
+            </div>
+            <MenuPerformance topItems={report.top_items} bottomItems={report.bottom_items} />
           </div>
-          <div style={{ fontSize: "24px", fontWeight: 500, color: "#0f1117" }}>
-            {formatRevenue(report.avg_order_value)}
-          </div>
-        </div>
 
-        <div
-          style={{
-            backgroundColor: "#ffffff",
-            borderRadius: "10px",
-            padding: "20px 24px",
-            border: "0.5px solid #ebebeb",
-          }}
-        >
           <div
             style={{
-              fontSize: "11px",
-              color: "#888888",
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              marginBottom: "8px",
+              backgroundColor: "#ffffff",
+              borderRadius: "12px",
+              padding: "20px 24px",
+              border: "0.5px solid #ebebeb",
             }}
           >
-            Peak Day
+            <div
+              style={{
+                fontSize: "11px",
+                fontWeight: 500,
+                color: "#888888",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                marginBottom: "16px",
+              }}
+            >
+              AI Insights
+            </div>
+            <AIInsights bullets={insights?.bullets ?? null} />
           </div>
-          <div style={{ fontSize: "24px", fontWeight: 500, color: "#0f1117" }}>
-            {report.peak_day}
-          </div>
-        </div>
-      </div>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "3fr 2fr",
-          gap: "16px",
-          marginBottom: "16px",
-        }}
-      >
-        <div
-          style={{
-            backgroundColor: "#ffffff",
-            borderRadius: "12px",
-            padding: "20px 24px",
-            border: "0.5px solid #ebebeb",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "11px",
-              fontWeight: 500,
-              color: "#888888",
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              marginBottom: "16px",
-            }}
-          >
-            Daily Revenue
-          </div>
-          <RevenueChart data={report.daily_revenue} />
-        </div>
-
-        <div
-          style={{
-            backgroundColor: "#ffffff",
-            borderRadius: "12px",
-            padding: "20px 24px",
-            border: "0.5px solid #ebebeb",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "11px",
-              fontWeight: 500,
-              color: "#888888",
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              marginBottom: "16px",
-            }}
-          >
-            Revenue by Day of Week
-          </div>
-          <DayOfWeekChart data={report.revenue_by_day_of_week} />
-        </div>
-      </div>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "16px",
-        }}
-      >
-        <div
-          style={{
-            backgroundColor: "#ffffff",
-            borderRadius: "12px",
-            padding: "20px 24px",
-            border: "0.5px solid #ebebeb",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "11px",
-              fontWeight: 500,
-              color: "#888888",
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              marginBottom: "16px",
-            }}
-          >
-            Menu Performance
-          </div>
-          <MenuPerformance topItems={report.top_items} bottomItems={report.bottom_items} />
-        </div>
-
-        <div
-          style={{
-            backgroundColor: "#ffffff",
-            borderRadius: "12px",
-            padding: "20px 24px",
-            border: "0.5px solid #ebebeb",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "11px",
-              fontWeight: 500,
-              color: "#888888",
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              marginBottom: "16px",
-            }}
-          >
-            AI Insights
-          </div>
-          <AIInsights bullets={insights?.bullets ?? null} />
         </div>
       </div>
     </div>

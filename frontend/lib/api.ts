@@ -50,7 +50,7 @@ export async function getSummary(
   userId: string
 ): Promise<{
   total_reports: number;
-  combined_total_revenue: number;
+  total_orders_analysed: number;
   most_recent_report_date: string | null;
 }> {
   const res = await fetch(`${BASE_URL}/analytics/reports/${userId}/summary`);
@@ -77,5 +77,14 @@ export async function getInsights(
   generated_at?: string;
 }> {
   const res = await fetch(`${BASE_URL}/insights/${reportId}`);
+  return handleResponse(res);
+}
+
+export async function deleteReport(
+  reportId: string
+): Promise<{ success: boolean }> {
+  const res = await fetch(`${BASE_URL}/analytics/report/${reportId}`, {
+    method: "DELETE",
+  });
   return handleResponse(res);
 }

@@ -7,7 +7,7 @@ from pydantic import BaseModel
 import pandas as pd
 from supabase import create_client, Client
 
-from utils.gemini import generate_insights
+from utils.groq_client import generate_insights
 
 load_dotenv()
 

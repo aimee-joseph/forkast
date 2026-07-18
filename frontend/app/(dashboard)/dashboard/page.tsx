@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import { getReports, getSummary } from "@/lib/api";
+import { getReports, getSummary, deleteReport } from "@/lib/api";
 
 interface Report {
   id: string;
@@ -17,7 +17,7 @@ interface Report {
 
 interface Summary {
   total_reports: number;
-  combined_total_revenue: number;
+  total_orders_analysed: number;
   most_recent_report_date: string | null;
 }
 
@@ -28,6 +28,7 @@ export default function DashboardPage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [hoveredReportId, setHoveredReportId] = useState<string | null>(null);
+  const [hoveredAction, setHoveredAction] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -58,6 +59,26 @@ export default function DashboardPage() {
     }
     fetchData();
   }, [router]);
+
+
+
+  const handleDelete = async (e: React.MouseEvent, reportId: string) => {
+    e.stopPropagation();
+    if (confirm("Delete this report? This cannot be undone.")) {
+      try {
+        await deleteReport(reportId);
+        setReports((prev) => prev.filter((r) => r.id !== reportId));
+        
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          const summaryData = await getSummary(session.user.id);
+          setSummary(summaryData);
+        }
+      } catch (err: any) {
+        alert("Failed to delete report: " + (err.message || err));
+      }
+    }
+  };
 
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return "N/A";
@@ -155,10 +176,10 @@ export default function DashboardPage() {
               marginBottom: "8px",
             }}
           >
-            Combined Revenue
+            Orders Analysed
           </div>
           <div style={{ fontSize: "24px", fontWeight: 500, color: "#0f1117" }}>
-            {formatRevenue(summary?.combined_total_revenue || 0)}
+            {summary?.total_orders_analysed || 0}
           </div>
         </div>
 
@@ -233,8 +254,14 @@ export default function DashboardPage() {
               <div
                 key={report.id}
                 onClick={() => router.push(`/dashboard/${report.id}`)}
-                onMouseEnter={() => setHoveredReportId(report.id)}
-                onMouseLeave={() => setHoveredReportId(null)}
+                onMouseEnter={() => {
+                  setHoveredReportId(report.id);
+                  setHoveredAction(report.id);
+                }}
+                onMouseLeave={() => {
+                  setHoveredReportId(null);
+                  setHoveredAction(null);
+                }}
                 style={{
                   backgroundColor: "#ffffff",
                   borderRadius: "10px",
@@ -245,6 +272,7 @@ export default function DashboardPage() {
                   justifyContent: "space-between",
                   alignItems: "center",
                   transition: "border-color 0.2s",
+                  position: "relative",
                 }}
               >
                 <div>
@@ -264,6 +292,36 @@ export default function DashboardPage() {
                     {report.total_orders} orders
                   </div>
                 </div>
+
+                {hoveredReportId === report.id && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "16px",
+                      right: "20px",
+                      display: "flex",
+                      gap: "6px",
+                      zIndex: 10,
+                      backgroundColor: "#ffffff",
+                    }}
+                  >
+                    <button
+                      onClick={(e) => handleDelete(e, report.id)}
+                      style={{
+                        fontSize: "11px",
+                        padding: "4px 10px",
+                        borderRadius: "6px",
+                        border: "0.5px solid #ef4444",
+                        backgroundColor: "white",
+                        color: "#ef4444",
+                        cursor: "pointer",
+                        fontWeight: 500,
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
 

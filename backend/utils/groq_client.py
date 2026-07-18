@@ -2,15 +2,15 @@ import os
 import re
 
 from dotenv import load_dotenv
-from google import genai
+from groq import Groq
 
 load_dotenv()
 
-_api_key = os.getenv("GEMINI_API_KEY")
+_api_key = os.getenv("GROQ_API_KEY")
 if not _api_key:
-    raise RuntimeError("GEMINI_API_KEY not set in environment")
+    raise RuntimeError("GROQ_API_KEY not set in environment")
 
-_client = genai.Client(api_key=_api_key)
+_client = Groq(api_key=_api_key)
 
 
 def generate_insights(stats: dict) -> list[str]:
@@ -45,19 +45,22 @@ def generate_insights(stats: dict) -> list[str]:
     )
 
     try:
-        response = _client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=prompt,
+        response = _client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=500,
+            temperature=0.7,
         )
+        text = response.choices[0].message.content
     except Exception as e:
-        raise RuntimeError(f"Gemini API error: {e}")
+        raise RuntimeError(f"Groq API error: {e}")
 
-    if not response.text:
-        raise RuntimeError("Gemini returned an empty response")
+    if not text:
+        raise RuntimeError("Groq returned an empty response")
 
     lines = [
         re.sub(r"^[\s\-\d.*•]+", "", line).strip()
-        for line in response.text.strip().splitlines()
+        for line in text.strip().splitlines()
         if line.strip()
     ]
 
