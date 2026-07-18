@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { getReport, getInsights, generateInsights } from "@/lib/api";
 import RevenueChart from "@/components/RevenueChart";
@@ -45,6 +45,7 @@ interface Insights {
 export default function ReportDashboard() {
   const { report_id } = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [userId, setUserId] = useState<string | null>(null);
   const [report, setReport] = useState<Report | null>(null);
@@ -112,6 +113,17 @@ export default function ReportDashboard() {
       setExporting(false);
     }
   };
+
+  useEffect(() => {
+    if (!report || loading) return;
+    const shouldExport = searchParams.get("export") === "true";
+    if (shouldExport) {
+      const timer = setTimeout(async () => {
+        await handleExport();
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [report, loading]);
 
   const formatRevenue = (value: number) => {
     return `₹${value.toLocaleString("en-IN", {

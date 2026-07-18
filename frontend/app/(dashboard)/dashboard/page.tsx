@@ -60,7 +60,10 @@ export default function DashboardPage() {
     fetchData();
   }, [router]);
 
-
+  const handleDownload = (e: React.MouseEvent, reportId: string) => {
+    e.stopPropagation();
+    window.open(`/dashboard/${reportId}?export=true`, "_blank");
+  };
 
   const handleDelete = async (e: React.MouseEvent, reportId: string) => {
     e.stopPropagation();
@@ -305,6 +308,21 @@ export default function DashboardPage() {
                       backgroundColor: "#ffffff",
                     }}
                   >
+                    <button
+                      onClick={(e) => handleDownload(e, report.id)}
+                      style={{
+                        fontSize: "11px",
+                        padding: "4px 10px",
+                        borderRadius: "6px",
+                        border: "0.5px solid #e5e5e5",
+                        backgroundColor: "white",
+                        color: "#555555",
+                        cursor: "pointer",
+                        fontWeight: 500,
+                      }}
+                    >
+                      Download
+                    </button>
                     <button
                       onClick={(e) => handleDelete(e, report.id)}
                       style={{
