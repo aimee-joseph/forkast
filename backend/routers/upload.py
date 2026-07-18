@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 import pandas as pd
-from supabase import create_client
+from supabase import create_client, Client
 
 from utils.parser import get_column_preview, parse_csv
 
@@ -15,7 +15,7 @@ _supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 if not _supabase_url or not _supabase_key:
     raise RuntimeError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set")
 
-supabase = create_client(_supabase_url, _supabase_key)
+supabase: Client = create_client(_supabase_url, _supabase_key)
 
 router = APIRouter()
 
@@ -102,16 +102,29 @@ async def process(
             })
             .execute()
         )
+        if not report_resp.data:
+            raise HTTPException(status_code=500, detail="Failed to create report row")
         report_id = report_resp.data[0]["id"]
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to save report: {e}")
 
+    import math
     sales_records = []
     for row in rows:
         record = {**row, "report_id": report_id, "user_id": user_id}
         record["date"] = str(record["date"])
-        sales_records.append(record)
+        cleaned = {}
+        for k, v in record.items():
+            if isinstance(v, float) and math.isnan(v):
+                cleaned[k] = None
+            else:
+                cleaned[k] = v
+        sales_records.append(cleaned)
 
+    print(f"Inserting {len(sales_records)} sales records...")
+    print(f"Sample record: {sales_records[0] if sales_records else 'EMPTY'}")
     try:
         supabase.table("sales_records").insert(sales_records).execute()
     except Exception as e:

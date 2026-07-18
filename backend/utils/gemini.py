@@ -2,7 +2,7 @@ import os
 import re
 
 from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai
 
 load_dotenv()
 
@@ -10,8 +10,7 @@ _api_key = os.getenv("GEMINI_API_KEY")
 if not _api_key:
     raise RuntimeError("GEMINI_API_KEY not set in environment")
 
-genai.configure(api_key=_api_key)
-_model = genai.GenerativeModel("gemini-1.5-flash")
+_client = genai.Client(api_key=_api_key)
 
 
 def generate_insights(stats: dict) -> list[str]:
@@ -46,7 +45,10 @@ def generate_insights(stats: dict) -> list[str]:
     )
 
     try:
-        response = _model.generate_content(prompt)
+        response = _client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt,
+        )
     except Exception as e:
         raise RuntimeError(f"Gemini API error: {e}")
 

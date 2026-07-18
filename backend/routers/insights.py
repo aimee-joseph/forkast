@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import pandas as pd
-from supabase import create_client
+from supabase import create_client, Client
 
 from utils.gemini import generate_insights
 
@@ -16,7 +16,7 @@ _supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 if not _supabase_url or not _supabase_key:
     raise RuntimeError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set")
 
-supabase = create_client(_supabase_url, _supabase_key)
+supabase: Client = create_client(_supabase_url, _supabase_key)
 
 router = APIRouter()
 
