@@ -9,6 +9,7 @@ import { getReports, getSummary, deleteReport } from "@/lib/api";
 interface Report {
   id: string;
   filename: string;
+  report_name?: string;
   date_range_start: string;
   date_range_end: string;
   total_revenue: number;
@@ -280,7 +281,7 @@ export default function DashboardPage() {
               >
                 <div>
                   <div style={{ fontSize: "14px", color: "#0f1117", fontWeight: 500, marginBottom: "4px" }}>
-                    {report.filename}
+                    {report.report_name || report.filename}
                   </div>
                   <div style={{ fontSize: "12px", color: "#888888" }}>
                     {report.date_range_start} to {report.date_range_end}
