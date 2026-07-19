@@ -25,7 +25,8 @@ export default function Sidebar() {
       if (session?.user) {
         const email = session.user.email || "";
         const restaurantName = session.user.user_metadata?.restaurant_name || email;
-        const initials = email ? email.substring(0, 2).toUpperCase() : "US";
+        const rawName = session.user.user_metadata?.restaurant_name || email;
+        const initials = rawName ? rawName.substring(0, 2).toUpperCase() : "US";
         setUser({ email, name: restaurantName, initials });
       }
     }
@@ -35,7 +36,8 @@ export default function Sidebar() {
       if (session?.user) {
         const email = session.user.email || "";
         const restaurantName = session.user.user_metadata?.restaurant_name || email;
-        const initials = email ? email.substring(0, 2).toUpperCase() : "US";
+        const rawName = session.user.user_metadata?.restaurant_name || email;
+        const initials = rawName ? rawName.substring(0, 2).toUpperCase() : "US";
         setUser({ email, name: restaurantName, initials });
       } else {
         setUser(null);

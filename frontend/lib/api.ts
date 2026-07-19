@@ -88,3 +88,15 @@ export async function deleteReport(
   });
   return handleResponse(res);
 }
+
+export async function renameReport(
+  reportId: string,
+  reportName: string
+): Promise<any> {
+  const res = await fetch(`${BASE_URL}/analytics/report/${reportId}/rename`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ report_name: reportName }),
+  });
+  return handleResponse(res);
+}

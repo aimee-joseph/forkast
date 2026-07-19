@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
 import pandas as pd
+from pydantic import BaseModel
 from supabase import create_client, Client
 
 load_dotenv()
@@ -153,4 +154,26 @@ async def delete_report(report_id: str):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to delete report: {e}")
+
+
+class RenameRequest(BaseModel):
+    report_name: str
+
+
+@router.patch("/report/{report_id}/rename")
+async def rename_report(report_id: str, req: RenameRequest):
+    try:
+        resp = (
+            supabase.table("reports")
+            .update({"report_name": req.report_name})
+            .eq("id", report_id)
+            .execute()
+        )
+        if not resp.data:
+            raise HTTPException(status_code=404, detail="Report not found")
+        return resp.data[0]
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to rename report: {e}")
 

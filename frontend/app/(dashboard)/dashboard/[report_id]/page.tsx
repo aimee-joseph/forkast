@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { getReport, getInsights, generateInsights } from "@/lib/api";
+import { getReport, getInsights, generateInsights, renameReport } from "@/lib/api";
 import RevenueChart from "@/components/RevenueChart";
 import DayOfWeekChart from "@/components/DayOfWeekChart";
 import MenuPerformance from "@/components/MenuPerformance";
 import AIInsights from "@/components/AIInsights";
 import { exportReportPDF } from "@/lib/exportPDF";
+import { Pencil, Check, X } from "lucide-react";
 
 interface Item {
   item_name: string;
@@ -24,6 +25,7 @@ interface DailyRevenue {
 interface Report {
   id: string;
   filename: string;
+  report_name?: string;
   date_range_start: string;
   date_range_end: string;
   total_revenue: number;
@@ -54,6 +56,10 @@ export default function ReportDashboard() {
   const [generating, setGenerating] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [error, setError] = useState("");
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editedName, setEditedName] = useState("");
+  const [savingName, setSavingName] = useState(false);
+  const [isPencilHovered, setIsPencilHovered] = useState(false);
 
   const reportIdStr = (Array.isArray(report_id) ? report_id[0] : report_id) ?? "";
 
@@ -99,13 +105,27 @@ export default function ReportDashboard() {
     }
   };
 
+  const handleRenameSave = async () => {
+    if (!editedName.trim() || !reportIdStr) return;
+    setSavingName(true);
+    try {
+      await renameReport(reportIdStr, editedName.trim());
+      setReport((prev) => (prev ? { ...prev, report_name: editedName.trim() } : prev));
+      setIsEditingName(false);
+    } catch (err: any) {
+      setError(err.message || "Failed to rename report");
+    } finally {
+      setSavingName(false);
+    }
+  };
+
   const handleExport = async () => {
     if (!report) return;
     setExporting(true);
     try {
       await exportReportPDF(
         "report-export-area",
-        `forkast-${report.filename.replace(".csv", "")}-report.pdf`
+        `forkast-${(report.report_name || report.filename).replace(".csv", "")}-report.pdf`
       );
     } catch (err: any) {
       setError(err.message || "Failed to export PDF");
@@ -181,9 +201,87 @@ export default function ReportDashboard() {
         }}
       >
         <div>
-          <h1 style={{ fontSize: "20px", fontWeight: 500, color: "#0f1117", margin: "0 0 4px 0" }}>
-            {report.filename}
-          </h1>
+          {!isEditingName ? (
+            <div style={{ display: "flex", alignItems: "center", marginBottom: "4px" }}>
+              <h1 style={{ fontSize: "20px", fontWeight: 500, color: "#0f1117", margin: 0 }}>
+                {report.report_name || report.filename}
+              </h1>
+              <button
+                onClick={() => {
+                  setIsEditingName(true);
+                  setEditedName(report.report_name || report.filename);
+                }}
+                onMouseEnter={() => setIsPencilHovered(true)}
+                onMouseLeave={() => setIsPencilHovered(false)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: isPencilHovered ? "#555555" : "#aaaaaa",
+                  cursor: "pointer",
+                  padding: "4px",
+                  marginLeft: "6px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <Pencil size={14} />
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: "flex", alignItems: "center", gap: "4px", marginBottom: "4px" }}>
+              <input
+                type="text"
+                value={editedName}
+                onChange={(e) => setEditedName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleRenameSave();
+                  else if (e.key === "Escape") setIsEditingName(false);
+                }}
+                style={{
+                  fontSize: "20px",
+                  fontWeight: 500,
+                  color: "#0f1117",
+                  border: "none",
+                  borderBottom: "1.5px solid #f59e0b",
+                  outline: "none",
+                  background: "transparent",
+                  fontFamily: "inherit",
+                  minWidth: "200px",
+                }}
+                autoFocus
+              />
+              <button
+                onClick={handleRenameSave}
+                disabled={savingName}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#22c55e",
+                  cursor: savingName ? "not-allowed" : "pointer",
+                  opacity: savingName ? 0.5 : 1,
+                  padding: "4px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <Check size={14} />
+              </button>
+              <button
+                onClick={() => setIsEditingName(false)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#ef4444",
+                  cursor: "pointer",
+                  padding: "4px",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <X size={14} />
+              </button>
+            </div>
+          )}
           <p style={{ color: "#888888", fontSize: "13px", margin: 0 }}>
             {report.date_range_start} to {report.date_range_end} &bull; {report.total_orders} orders
           </p>
