@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { BarChart2, Upload, FileText, Settings, LogOut } from "lucide-react";
+import { BarChart2, Upload, FileText, GitCompare, Settings, LogOut } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 interface UserInfo {
@@ -58,6 +58,7 @@ export default function Sidebar() {
     { label: "Dashboard", href: "/dashboard", icon: BarChart2 },
     { label: "Upload data", href: "/upload", icon: Upload },
     { label: "Reports", href: "/reports", icon: FileText },
+    { label: "Compare", href: "/compare", icon: GitCompare },
     { label: "Settings", href: "/settings", icon: Settings },
   ];
 

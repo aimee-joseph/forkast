@@ -100,3 +100,13 @@ export async function renameReport(
   });
   return handleResponse(res);
 }
+
+export async function compareReports(
+  reportAId: string,
+  reportBId: string
+): Promise<any> {
+  const res = await fetch(
+    `${BASE_URL}/analytics/compare?report_a=${reportAId}&report_b=${reportBId}`
+  );
+  return handleResponse(res);
+}

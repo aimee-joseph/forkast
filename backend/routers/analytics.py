@@ -1,7 +1,7 @@
 import os
 
 from dotenv import load_dotenv
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 import pandas as pd
 from pydantic import BaseModel
 from supabase import create_client, Client
@@ -176,4 +176,103 @@ async def rename_report(report_id: str, req: RenameRequest):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to rename report: {e}")
+
+
+def _get_report_compare_data(report_id: str) -> dict:
+    try:
+        report_resp = (
+            supabase.table("reports")
+            .select("*")
+            .eq("id", report_id)
+            .single()
+            .execute()
+        )
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"Report {report_id} not found: {e}")
+
+    report = report_resp.data
+    if not report:
+        raise HTTPException(status_code=404, detail=f"Report {report_id} not found")
+
+    try:
+        sales_resp = (
+            supabase.table("sales_records")
+            .select("*")
+            .eq("report_id", report_id)
+            .execute()
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch sales records for {report_id}: {e}")
+
+    rows = sales_resp.data
+    all_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+    if not rows:
+        return {
+            "id": report.get("id"),
+            "report_name": report.get("report_name"),
+            "filename": report.get("filename"),
+            "date_range_start": report.get("date_range_start"),
+            "date_range_end": report.get("date_range_end"),
+            "total_revenue": 0.0,
+            "total_orders": 0,
+            "avg_order_value": 0.0,
+            "peak_day": "N/A",
+            "top_items": [],
+            "revenue_by_day_of_week": {day: 0.0 for day in all_days},
+        }
+
+    df = pd.DataFrame(rows)
+    df["date"] = pd.to_datetime(df["date"])
+    df["total_price"] = pd.to_numeric(df["total_price"], errors="coerce")
+    df["quantity"] = pd.to_numeric(df["quantity"], errors="coerce")
+
+    total_revenue = round(float(df["total_price"].sum()), 2)
+    total_orders = int(df["order_id"].nunique()) if "order_id" in df.columns else 0
+    avg_order_value = round(float(total_revenue / total_orders), 2) if total_orders > 0 else 0.0
+
+    df["day_of_week"] = df["date"].dt.day_name()
+    revenue_by_dow = df.groupby("day_of_week")["total_price"].sum()
+    peak_day = str(revenue_by_dow.idxmax()) if not revenue_by_dow.empty else "N/A"
+    revenue_by_day_of_week = {day: round(float(revenue_by_dow.get(day, 0)), 2) for day in all_days}
+
+    item_stats = (
+        df.groupby("item_name")
+        .agg(total_revenue=("total_price", "sum"), quantity=("quantity", "sum"))
+        .reset_index()
+        .sort_values("total_revenue", ascending=False)
+    )
+    top_items = item_stats.head(5).to_dict(orient="records")
+    for item in top_items:
+        item["total_revenue"] = round(float(item["total_revenue"]), 2)
+        item["quantity"] = int(item["quantity"])
+
+    return {
+        "id": report.get("id"),
+        "report_name": report.get("report_name"),
+        "filename": report.get("filename"),
+        "date_range_start": report.get("date_range_start"),
+        "date_range_end": report.get("date_range_end"),
+        "total_revenue": total_revenue,
+        "total_orders": total_orders,
+        "avg_order_value": avg_order_value,
+        "peak_day": peak_day,
+        "top_items": top_items,
+        "revenue_by_day_of_week": revenue_by_day_of_week,
+    }
+
+
+@router.get("/compare")
+async def compare_reports(report_a: str = Query(...), report_b: str = Query(...)):
+    try:
+        data_a = _get_report_compare_data(report_a)
+        data_b = _get_report_compare_data(report_b)
+        return {
+            "report_a": data_a,
+            "report_b": data_b,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to compare reports: {e}")
 
