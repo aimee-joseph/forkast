@@ -517,7 +517,11 @@ export default function ReportDashboard() {
             >
               Menu Performance
             </div>
-            <MenuPerformance topItems={report.top_items} bottomItems={report.bottom_items} />
+            <MenuPerformance 
+              topItems={report.top_items} 
+              bottomItems={report.bottom_items}
+              totalRevenue={report.total_revenue}
+            />
           </div>
 
           <div

@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 interface MenuItem {
   item_name: string;
   total_revenue: number;
@@ -9,12 +11,16 @@ interface MenuItem {
 interface MenuPerformanceProps {
   topItems: MenuItem[];
   bottomItems: MenuItem[];
+  totalRevenue: number;
 }
 
 export default function MenuPerformance({
   topItems,
   bottomItems,
+  totalRevenue,
 }: MenuPerformanceProps) {
+  const [viewMode, setViewMode] = useState<"revenue" | "percent">("revenue");
+
   const s1Items = topItems.slice(0, 5);
   const s2Items = bottomItems;
 
@@ -29,7 +35,9 @@ export default function MenuPerformance({
     title: string,
     items: MenuItem[],
     maxRevenue: number,
-    fillColor: string
+    fillColor: string,
+    viewMode: "revenue" | "percent",
+    totalRevenue: number
   ) => {
     return (
       <div>
@@ -47,10 +55,18 @@ export default function MenuPerformance({
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           {items.map((item, idx) => {
-            const widthPct = Math.min(
-              100,
-              Math.max(0, (item.total_revenue / maxRevenue) * 100)
-            );
+            const widthPct =
+              viewMode === "percent"
+                ? (item.total_revenue / totalRevenue) * 100
+                : Math.min(
+                    100,
+                    Math.max(0, (item.total_revenue / maxRevenue) * 100)
+                  );
+            const valueLabel =
+              viewMode === "percent"
+                ? ((item.total_revenue / totalRevenue) * 100).toFixed(1) + "%"
+                : formatValue(item.total_revenue);
+
             return (
               <div
                 key={`${item.item_name}-${idx}`}
@@ -104,7 +120,7 @@ export default function MenuPerformance({
                     minWidth: "64px",
                   }}
                 >
-                  {formatValue(item.total_revenue)}
+                  {valueLabel}
                 </div>
               </div>
             );
@@ -116,14 +132,60 @@ export default function MenuPerformance({
 
   return (
     <div>
-      {renderSection("Top items", s1Items, maxRevenueS1, "#f59e0b")}
+      <div style={{ display: "flex", gap: "6px", marginBottom: "16px" }}>
+        <button
+          onClick={() => setViewMode("revenue")}
+          style={{
+            fontSize: "11px",
+            padding: "3px 10px",
+            borderRadius: "12px",
+            cursor: "pointer",
+            fontFamily: "inherit",
+            backgroundColor: viewMode === "revenue" ? "#f59e0b" : "transparent",
+            color: viewMode === "revenue" ? "#ffffff" : "#888888",
+            border: viewMode === "revenue" ? "none" : "0.5px solid #e5e5e5",
+          }}
+        >
+          ₹ Revenue
+        </button>
+        <button
+          onClick={() => setViewMode("percent")}
+          style={{
+            fontSize: "11px",
+            padding: "3px 10px",
+            borderRadius: "12px",
+            cursor: "pointer",
+            fontFamily: "inherit",
+            backgroundColor: viewMode === "percent" ? "#f59e0b" : "transparent",
+            color: viewMode === "percent" ? "#ffffff" : "#888888",
+            border: viewMode === "percent" ? "none" : "0.5px solid #e5e5e5",
+          }}
+        >
+          % Share
+        </button>
+      </div>
+      {renderSection(
+        "Top items",
+        s1Items,
+        maxRevenueS1,
+        "#f59e0b",
+        viewMode,
+        totalRevenue
+      )}
       <div
         style={{
           borderBottom: "1px solid #f0f0f0",
           margin: "16px 0",
         }}
       />
-      {renderSection("Slow movers", s2Items, maxRevenueS2, "#e5e5e5")}
+      {renderSection(
+        "Slow movers",
+        s2Items,
+        maxRevenueS2,
+        "#e5e5e5",
+        viewMode,
+        totalRevenue
+      )}
     </div>
   );
 }
