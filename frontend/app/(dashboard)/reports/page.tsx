@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import { getReports } from "@/lib/api";
+import { getReports, deleteReport } from "@/lib/api";
 
 interface Report {
   id: string;
@@ -21,6 +21,7 @@ export default function ReportsPage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [hoveredReportId, setHoveredReportId] = useState<string | null>(null);
+  const [deletingReportId, setDeletingReportId] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchReports() {
@@ -42,6 +43,21 @@ export default function ReportsPage() {
     }
     fetchReports();
   }, [router]);
+
+  const handleDelete = async (e: React.MouseEvent, reportId: string) => {
+    e.stopPropagation();
+    if (confirm("Delete this report? This cannot be undone.")) {
+      setDeletingReportId(reportId);
+      try {
+        await deleteReport(reportId);
+        setReports((prev) => prev.filter((r) => r.id !== reportId));
+      } catch (err: any) {
+        alert("Failed to delete report: " + (err.message || err));
+      } finally {
+        setDeletingReportId(null);
+      }
+    }
+  };
 
   const formatRevenue = (value: number) => {
     return `₹${value.toLocaleString("en-IN", {
@@ -159,6 +175,7 @@ export default function ReportsPage() {
                   justifyContent: "space-between",
                   alignItems: "center",
                   transition: "border-color 0.2s",
+                  position: "relative",
                 }}
               >
                 <div>
@@ -178,6 +195,54 @@ export default function ReportsPage() {
                     {report.total_orders} orders
                   </div>
                 </div>
+
+                {hoveredReportId === report.id && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "16px",
+                      right: "20px",
+                      display: "flex",
+                      gap: "6px",
+                      zIndex: 10,
+                      backgroundColor: "#ffffff",
+                    }}
+                  >
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.open(`/dashboard/${report.id}?export=true`, "_blank");
+                      }}
+                      style={{
+                        fontSize: "11px",
+                        padding: "4px 10px",
+                        borderRadius: "6px",
+                        border: "0.5px solid #e5e5e5",
+                        backgroundColor: "white",
+                        color: "#555555",
+                        cursor: "pointer",
+                        fontWeight: 500,
+                      }}
+                    >
+                      Download
+                    </button>
+                    <button
+                      onClick={(e) => handleDelete(e, report.id)}
+                      style={{
+                        fontSize: "11px",
+                        padding: "4px 10px",
+                        borderRadius: "6px",
+                        border: "0.5px solid #ef4444",
+                        backgroundColor: "white",
+                        color: "#ef4444",
+                        cursor: "pointer",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {deletingReportId === report.id ? "..." : "Delete"}
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
