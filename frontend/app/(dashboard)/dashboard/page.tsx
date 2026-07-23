@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { getReports, getSummary, deleteReport } from "@/lib/api";
+import { MoreVertical } from "lucide-react";
 
 interface Report {
   id: string;
@@ -28,8 +29,13 @@ export default function DashboardPage() {
   const [summary, setSummary] = useState<Summary | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
-  const [hoveredReportId, setHoveredReportId] = useState<string | null>(null);
-  const [hoveredAction, setHoveredAction] = useState<string | null>(null);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = () => setOpenMenuId(null);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -60,11 +66,6 @@ export default function DashboardPage() {
     }
     fetchData();
   }, [router]);
-
-  const handleDownload = (e: React.MouseEvent, reportId: string) => {
-    e.stopPropagation();
-    window.open(`/dashboard/${reportId}?export=true`, "_blank");
-  };
 
   const handleDelete = async (e: React.MouseEvent, reportId: string) => {
     e.stopPropagation();
@@ -258,19 +259,11 @@ export default function DashboardPage() {
               <div
                 key={report.id}
                 onClick={() => router.push(`/dashboard/${report.id}`)}
-                onMouseEnter={() => {
-                  setHoveredReportId(report.id);
-                  setHoveredAction(report.id);
-                }}
-                onMouseLeave={() => {
-                  setHoveredReportId(null);
-                  setHoveredAction(null);
-                }}
                 style={{
                   backgroundColor: "#ffffff",
                   borderRadius: "10px",
                   padding: "16px 20px",
-                  border: `0.5px solid ${hoveredReportId === report.id ? "#f59e0b" : "#ebebeb"}`,
+                  border: "0.5px solid #ebebeb",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
@@ -287,7 +280,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <div style={{ textAlign: "right", minWidth: "140px" }}>
+                <div style={{ textAlign: "right", minWidth: "120px" }}>
                   <div style={{ fontSize: "14px", color: "#0f1117", fontWeight: 500, marginBottom: "4px" }}>
                     {formatRevenue(report.total_revenue)}
                   </div>
@@ -296,45 +289,93 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <div
-                  style={{
-                    minWidth: "120px",
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    gap: "6px",
-                    visibility: hoveredReportId === report.id ? "visible" : "hidden",
-                  }}
-                >
+                <div style={{ position: "relative", width: "32px", display: "flex", justifyContent: "flex-end" }}>
                   <button
-                    onClick={(e) => handleDownload(e, report.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenMenuId(openMenuId === report.id ? null : report.id);
+                    }}
                     style={{
-                      fontSize: "11px",
-                      padding: "4px 10px",
-                      borderRadius: "6px",
-                      border: "0.5px solid #e5e5e5",
-                      backgroundColor: "white",
-                      color: "#555555",
+                      background: "none",
+                      border: "none",
                       cursor: "pointer",
-                      fontWeight: 500,
+                      color: "#aaaaaa",
+                      padding: "4px",
+                      borderRadius: "4px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
-                    Download
+                    <MoreVertical size={16} />
                   </button>
-                  <button
-                    onClick={(e) => handleDelete(e, report.id)}
-                    style={{
-                      fontSize: "11px",
-                      padding: "4px 10px",
-                      borderRadius: "6px",
-                      border: "0.5px solid #ef4444",
-                      backgroundColor: "white",
-                      color: "#ef4444",
-                      cursor: "pointer",
-                      fontWeight: 500,
-                    }}
-                  >
-                    Delete
-                  </button>
+
+                  {openMenuId === report.id && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        right: 0,
+                        top: "100%",
+                        backgroundColor: "white",
+                        borderRadius: "8px",
+                        border: "0.5px solid #e5e5e5",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                        zIndex: 20,
+                        minWidth: "120px",
+                        padding: "4px",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(`/dashboard/${report.id}?export=true`, "_blank");
+                          setOpenMenuId(null);
+                        }}
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          textAlign: "left",
+                          padding: "8px 12px",
+                          fontSize: "13px",
+                          cursor: "pointer",
+                          background: "none",
+                          border: "none",
+                          borderRadius: "6px",
+                          fontFamily: "inherit",
+                          color: "#0f1117",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f8f7f4")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                      >
+                        Download PDF
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(e, report.id);
+                          setOpenMenuId(null);
+                        }}
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          textAlign: "left",
+                          padding: "8px 12px",
+                          fontSize: "13px",
+                          cursor: "pointer",
+                          background: "none",
+                          border: "none",
+                          borderRadius: "6px",
+                          fontFamily: "inherit",
+                          color: "#ef4444",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f8f7f4")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
