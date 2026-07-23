@@ -172,13 +172,12 @@ export default function ReportsPage() {
                   border: `0.5px solid ${hoveredReportId === report.id ? "#f59e0b" : "#ebebeb"}`,
                   cursor: "pointer",
                   display: "flex",
-                  justifyContent: "space-between",
                   alignItems: "center",
+                  gap: "16px",
                   transition: "border-color 0.2s",
-                  position: "relative",
                 }}
               >
-                <div>
+                <div style={{ flex: 1 }}>
                   <div style={{ fontSize: "14px", color: "#0f1117", fontWeight: 500, marginBottom: "4px" }}>
                     {report.report_name || report.filename}
                   </div>
@@ -187,7 +186,7 @@ export default function ReportsPage() {
                   </div>
                 </div>
 
-                <div style={{ textAlign: "right" }}>
+                <div style={{ textAlign: "right", minWidth: "140px" }}>
                   <div style={{ fontSize: "14px", color: "#0f1117", fontWeight: 500, marginBottom: "4px" }}>
                     {formatRevenue(report.total_revenue)}
                   </div>
@@ -196,53 +195,49 @@ export default function ReportsPage() {
                   </div>
                 </div>
 
-                {hoveredReportId === report.id && (
-                  <div
+                <div
+                  style={{
+                    minWidth: "120px",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: "6px",
+                    visibility: hoveredReportId === report.id ? "visible" : "hidden",
+                  }}
+                >
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(`/dashboard/${report.id}?export=true`, "_blank");
+                    }}
                     style={{
-                      position: "absolute",
-                      top: "16px",
-                      right: "20px",
-                      display: "flex",
-                      gap: "6px",
-                      zIndex: 10,
-                      backgroundColor: "#ffffff",
+                      fontSize: "11px",
+                      padding: "4px 10px",
+                      borderRadius: "6px",
+                      border: "0.5px solid #e5e5e5",
+                      backgroundColor: "white",
+                      color: "#555555",
+                      cursor: "pointer",
+                      fontWeight: 500,
                     }}
                   >
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.open(`/dashboard/${report.id}?export=true`, "_blank");
-                      }}
-                      style={{
-                        fontSize: "11px",
-                        padding: "4px 10px",
-                        borderRadius: "6px",
-                        border: "0.5px solid #e5e5e5",
-                        backgroundColor: "white",
-                        color: "#555555",
-                        cursor: "pointer",
-                        fontWeight: 500,
-                      }}
-                    >
-                      Download
-                    </button>
-                    <button
-                      onClick={(e) => handleDelete(e, report.id)}
-                      style={{
-                        fontSize: "11px",
-                        padding: "4px 10px",
-                        borderRadius: "6px",
-                        border: "0.5px solid #ef4444",
-                        backgroundColor: "white",
-                        color: "#ef4444",
-                        cursor: "pointer",
-                        fontWeight: 500,
-                      }}
-                    >
-                      {deletingReportId === report.id ? "..." : "Delete"}
-                    </button>
-                  </div>
-                )}
+                    Download
+                  </button>
+                  <button
+                    onClick={(e) => handleDelete(e, report.id)}
+                    style={{
+                      fontSize: "11px",
+                      padding: "4px 10px",
+                      borderRadius: "6px",
+                      border: "0.5px solid #ef4444",
+                      backgroundColor: "white",
+                      color: "#ef4444",
+                      cursor: "pointer",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {deletingReportId === report.id ? "..." : "Delete"}
+                  </button>
+                </div>
               </div>
             ))}
           </div>
