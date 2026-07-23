@@ -24,8 +24,8 @@ export default function MenuPerformance({
   const s1Items = topItems.slice(0, 5);
   const s2Items = bottomItems;
 
-  const maxRevenueS1 = Math.max(...s1Items.map((i) => i.total_revenue), 1);
-  const maxRevenueS2 = Math.max(...s2Items.map((i) => i.total_revenue), 1);
+  const allItems = [...s1Items, ...s2Items];
+  const sharedMax = Math.max(...allItems.map((i) => i.total_revenue), 1);
 
   const formatValue = (val: number) => {
     return `₹${Math.round(val).toLocaleString("en-IN")}`;
@@ -167,7 +167,7 @@ export default function MenuPerformance({
       {renderSection(
         "Top items",
         s1Items,
-        maxRevenueS1,
+        sharedMax,
         "#f59e0b",
         viewMode,
         totalRevenue
@@ -181,8 +181,8 @@ export default function MenuPerformance({
       {renderSection(
         "Slow movers",
         s2Items,
-        maxRevenueS2,
-        "#e5e5e5",
+        sharedMax,
+        "#94a3b8",
         viewMode,
         totalRevenue
       )}
