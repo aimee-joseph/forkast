@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { getReports, getSummary, deleteReport } from "@/lib/api";
-import { MoreVertical } from "lucide-react";
+import { MoreVertical, X } from "lucide-react";
 
 interface Report {
   id: string;
@@ -30,12 +30,6 @@ export default function DashboardPage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const handleClickOutside = () => setOpenMenuId(null);
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -258,7 +252,13 @@ export default function DashboardPage() {
             {recentReports.map((report) => (
               <div
                 key={report.id}
-                onClick={() => router.push(`/dashboard/${report.id}`)}
+                onClick={() => {
+                  if (openMenuId) {
+                    setOpenMenuId(null);
+                    return;
+                  }
+                  router.push(`/dashboard/${report.id}`);
+                }}
                 style={{
                   backgroundColor: "#ffffff",
                   borderRadius: "10px",
@@ -293,7 +293,8 @@ export default function DashboardPage() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setOpenMenuId(openMenuId === report.id ? null : report.id);
+                      e.preventDefault();
+                      setOpenMenuId((prev) => (prev === report.id ? null : report.id));
                     }}
                     style={{
                       background: "none",
@@ -326,6 +327,25 @@ export default function DashboardPage() {
                         overflow: "hidden",
                       }}
                     >
+                      <div style={{ display: "flex", justifyContent: "flex-end", padding: "2px 2px 2px 2px" }}>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpenMenuId(null);
+                          }}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            color: "#aaaaaa",
+                            padding: "2px",
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
