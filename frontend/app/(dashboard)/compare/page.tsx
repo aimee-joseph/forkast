@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 import { supabase } from "@/lib/supabase";
 import { getReports, compareReports } from "@/lib/api";
 import ComparisonChart from "@/components/ComparisonChart";
@@ -39,6 +40,15 @@ interface ComparisonResponse {
 
 export default function ComparePage() {
   const router = useRouter();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isDark = mounted && resolvedTheme === "dark";
+
   const [reports, setReports] = useState<ReportOption[]>([]);
   const [reportAId, setReportAId] = useState("");
   const [reportBId, setReportBId] = useState("");
@@ -168,10 +178,10 @@ export default function ComparePage() {
                 width: "100%",
                 padding: "10px 12px",
                 borderRadius: "8px",
-                border: "1px solid var(--input-border)",
+                border: `1px solid ${isDark ? "rgba(255,255,255,0.12)" : "var(--input-border)"}`,
                 fontSize: "13px",
-                backgroundColor: "var(--input-bg)",
-                color: "var(--text-primary)",
+                backgroundColor: isDark ? "#2a2d36" : "#ffffff",
+                color: isDark ? "#f0f0f0" : "#0f1117",
                 outline: "none",
               }}
             >
@@ -203,10 +213,10 @@ export default function ComparePage() {
                 width: "100%",
                 padding: "10px 12px",
                 borderRadius: "8px",
-                border: "1px solid var(--input-border)",
+                border: `1px solid ${isDark ? "rgba(255,255,255,0.12)" : "var(--input-border)"}`,
                 fontSize: "13px",
-                backgroundColor: "var(--input-bg)",
-                color: "var(--text-primary)",
+                backgroundColor: isDark ? "#2a2d36" : "#ffffff",
+                color: isDark ? "#f0f0f0" : "#0f1117",
                 outline: "none",
               }}
             >

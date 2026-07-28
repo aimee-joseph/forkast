@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 import { supabase } from "@/lib/supabase";
 import { previewCSV, processCSV } from "@/lib/api";
 
@@ -17,6 +18,14 @@ const STANDARD_COLUMNS = [
 export default function UploadPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isDark = mounted && resolvedTheme === "dark";
 
   const [userId, setUserId] = useState<string | null>(null);
   const [step, setStep] = useState<1 | 2>(1);
@@ -137,9 +146,9 @@ export default function UploadPage() {
         </div>
 
         <div style={{ display: "flex", gap: "16px", fontSize: "13px", fontWeight: 500 }}>
-          <span style={{ color: step === 1 ? "#f59e0b" : "rgba(0,0,0,0.3)" }}>1. Upload file</span>
-          <span style={{ color: "rgba(0,0,0,0.2)" }}>&rarr;</span>
-          <span style={{ color: step === 2 ? "#f59e0b" : "rgba(0,0,0,0.3)" }}>2. Map columns</span>
+          <span style={{ color: step === 1 ? "#f59e0b" : isDark ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.3)" }}>1. Upload file</span>
+          <span style={{ color: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.2)" }}>&rarr;</span>
+          <span style={{ color: step === 2 ? "#f59e0b" : isDark ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.3)" }}>2. Map columns</span>
         </div>
       </div>
 
@@ -308,9 +317,10 @@ export default function UploadPage() {
                       width: "100%",
                       padding: "9px 12px",
                       borderRadius: "8px",
-                      border: "1px solid var(--input-border)",
+                      border: `1px solid ${isDark ? "rgba(255,255,255,0.12)" : "var(--input-border)"}`,
                       fontSize: "13px",
-                      backgroundColor: "var(--bg-card)",
+                      backgroundColor: isDark ? "#2a2d36" : "var(--bg-card)",
+                      color: isDark ? "#f0f0f0" : "var(--text-primary)",
                       outline: "none",
                     }}
                   >
