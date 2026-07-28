@@ -58,11 +58,13 @@ export default function SettingsPage() {
     boxSizing: "border-box",
     padding: "10px 12px",
     borderRadius: "8px",
-    border: `1px solid ${focusedField === field ? "#f59e0b" : "#e5e5e5"}`,
+    border: `1px solid ${focusedField === field ? "#f59e0b" : "var(--input-border)"}`,
     fontSize: "14px",
     marginBottom: "12px",
     outline: "none",
     fontFamily: "inherit",
+    backgroundColor: "var(--bg-card)",
+    color: "var(--text-primary)",
     transition: "border-color 0.2s",
   });
 
@@ -71,13 +73,13 @@ export default function SettingsPage() {
     boxSizing: "border-box",
     padding: "10px 12px",
     borderRadius: "8px",
-    border: "1px solid #e5e5e5",
+    border: "1px solid var(--input-border)",
     fontSize: "14px",
     marginBottom: "12px",
     outline: "none",
     fontFamily: "inherit",
-    backgroundColor: "#f8f7f4",
-    color: "#aaaaaa",
+    backgroundColor: "var(--bg-page)",
+    color: "var(--text-faint)",
     cursor: "not-allowed",
   });
 
@@ -89,7 +91,7 @@ export default function SettingsPage() {
           alignItems: "center",
           justifyContent: "center",
           height: "calc(100vh - 64px)",
-          color: "rgba(0, 0, 0, 0.4)",
+          color: "var(--text-muted)",
           fontSize: "13px",
         }}
       >
@@ -101,20 +103,20 @@ export default function SettingsPage() {
   return (
     <div style={{ padding: "32px", fontFamily: "inherit" }}>
       <div style={{ marginBottom: "32px" }}>
-        <h1 style={{ fontSize: "20px", fontWeight: 500, color: "#0f1117", margin: "0 0 4px 0" }}>
+        <h1 style={{ fontSize: "20px", fontWeight: 500, color: "var(--text-primary)", margin: "0 0 4px 0" }}>
           Settings
         </h1>
-        <p style={{ color: "#888888", fontSize: "13px", margin: 0 }}>
+        <p style={{ color: "var(--text-muted)", fontSize: "13px", margin: 0 }}>
           Manage your account and restaurant details
         </p>
       </div>
 
       <div
         style={{
-          backgroundColor: "#ffffff",
+          backgroundColor: "var(--bg-card)",
           borderRadius: "12px",
           padding: "24px",
-          border: "0.5px solid #ebebeb",
+          border: "0.5px solid var(--border-card)",
           marginBottom: "20px",
         }}
       >
@@ -122,10 +124,10 @@ export default function SettingsPage() {
           style={{
             fontSize: "14px",
             fontWeight: 500,
-            color: "#0f1117",
+            color: "var(--text-primary)",
             margin: "0 0 20px 0",
             paddingBottom: "12px",
-            borderBottom: "0.5px solid #f0f0f0",
+            borderBottom: "0.5px solid var(--border-subtle)",
           }}
         >
           Restaurant details
@@ -135,7 +137,7 @@ export default function SettingsPage() {
           <div style={{ display: "flex", flexDirection: "column", marginBottom: "6px" }}>
             <label
               style={{
-                color: "#555555",
+                color: "var(--text-secondary)",
                 fontSize: "12px",
                 fontWeight: 500,
                 marginBottom: "6px",
@@ -157,7 +159,7 @@ export default function SettingsPage() {
           <div style={{ display: "flex", flexDirection: "column", marginBottom: "6px" }}>
             <label
               style={{
-                color: "#555555",
+                color: "var(--text-secondary)",
                 fontSize: "12px",
                 fontWeight: 500,
                 marginBottom: "6px",
@@ -204,10 +206,10 @@ export default function SettingsPage() {
 
       <div
         style={{
-          backgroundColor: "#ffffff",
+          backgroundColor: "var(--bg-card)",
           borderRadius: "12px",
           padding: "24px",
-          border: "0.5px solid #ebebeb",
+          border: "0.5px solid var(--border-card)",
           marginBottom: "20px",
         }}
       >
@@ -218,7 +220,7 @@ export default function SettingsPage() {
             color: "#ef4444",
             margin: "0 0 20px 0",
             paddingBottom: "12px",
-            borderBottom: "0.5px solid #f0f0f0",
+            borderBottom: "0.5px solid var(--border-subtle)",
           }}
         >
           Account
@@ -231,7 +233,7 @@ export default function SettingsPage() {
             style={{
               border: "0.5px solid #ef4444",
               color: "#ef4444",
-              backgroundColor: "#ffffff",
+              backgroundColor: "var(--bg-card)",
               padding: "9px 20px",
               borderRadius: "8px",
               fontSize: "13px",
@@ -243,7 +245,7 @@ export default function SettingsPage() {
           </button>
 
           {showDeleteMessage && (
-            <div style={{ color: "#888888", fontSize: "12px", marginTop: "8px" }}>
+            <div style={{ color: "var(--text-muted)", fontSize: "12px", marginTop: "8px" }}>
               Delete account coming soon.
             </div>
           )}

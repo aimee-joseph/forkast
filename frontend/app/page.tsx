@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 import { supabase } from "@/lib/supabase";
-
-console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL)
-console.log("KEY:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
 
 export default function Home() {
   const router = useRouter();
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -74,11 +75,13 @@ export default function Home() {
     boxSizing: "border-box",
     padding: "10px 12px",
     borderRadius: "8px",
-    border: `1px solid ${focusedField === field ? "#f59e0b" : "#e5e5e5"}`,
+    border: `1px solid ${focusedField === field ? "#f59e0b" : isDark ? "rgba(255,255,255,0.12)" : "#e5e5e5"}`,
     fontSize: "14px",
     marginBottom: "12px",
     outline: "none",
     fontFamily: "inherit",
+    backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "#ffffff",
+    color: isDark ? "#f0f0f0" : "#0f1117",
     transition: "border-color 0.2s",
   });
 
@@ -87,7 +90,7 @@ export default function Home() {
       style={{
         width: "100vw",
         height: "100vh",
-        backgroundColor: "#0f1117",
+        backgroundColor: "var(--bg-page)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -95,18 +98,18 @@ export default function Home() {
     >
       <div
         style={{
-          backgroundColor: "#ffffff",
+          backgroundColor: isDark ? "#1e2129" : "#ffffff",
           borderRadius: "12px",
           padding: "36px",
           width: "380px",
-          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+          boxShadow: isDark ? "0 4px 20px rgba(0,0,0,0.4)" : "0 4px 20px rgba(0,0,0,0.08)",
         }}
       >
         <h1
           style={{
             fontSize: "18px",
             fontWeight: 500,
-            color: "#0f1117",
+            color: isDark ? "#f0f0f0" : "#0f1117",
             margin: "0 0 4px 0",
           }}
         >
@@ -114,7 +117,7 @@ export default function Home() {
         </h1>
         <p
           style={{
-            color: "#888888",
+            color: isDark ? "rgba(255,255,255,0.4)" : "#888888",
             fontSize: "13px",
             margin: "0 0 24px 0",
           }}
@@ -207,7 +210,7 @@ export default function Home() {
               marginTop: "20px",
               textAlign: "center",
               fontSize: "13px",
-              color: "#888888",
+              color: isDark ? "rgba(255,255,255,0.4)" : "#888888",
             }}
           >
             {mode === "login" ? (

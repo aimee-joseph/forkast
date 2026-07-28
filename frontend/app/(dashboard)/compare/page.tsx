@@ -97,7 +97,7 @@ export default function ComparePage() {
           alignItems: "center",
           justifyContent: "center",
           height: "calc(100vh - 64px)",
-          color: "rgba(0, 0, 0, 0.4)",
+          color: "var(--text-muted)",
           fontSize: "13px",
         }}
       >
@@ -108,10 +108,10 @@ export default function ComparePage() {
 
   return (
     <div style={{ padding: "32px", fontFamily: "inherit" }}>
-      <h1 style={{ fontSize: "20px", fontWeight: 500, color: "#0f1117", margin: "0 0 4px 0" }}>
+      <h1 style={{ fontSize: "20px", fontWeight: 500, color: "var(--text-primary)", margin: "0 0 4px 0" }}>
         Compare reports
       </h1>
-      <p style={{ color: "#888888", fontSize: "13px", margin: "0 0 32px 0" }}>
+      <p style={{ color: "var(--text-muted)", fontSize: "13px", margin: "0 0 32px 0" }}>
         Select two reports to compare performance
       </p>
 
@@ -134,10 +134,10 @@ export default function ComparePage() {
       {/* Selector Section */}
       <div
         style={{
-          backgroundColor: "#ffffff",
+          backgroundColor: "var(--bg-card)",
           borderRadius: "12px",
           padding: "24px",
-          border: "0.5px solid #ebebeb",
+          border: "0.5px solid var(--border-card)",
           marginBottom: "32px",
         }}
       >
@@ -154,7 +154,7 @@ export default function ComparePage() {
               style={{
                 display: "block",
                 fontSize: "12px",
-                color: "#555555",
+                color: "var(--text-secondary)",
                 fontWeight: 500,
                 marginBottom: "6px",
               }}
@@ -168,10 +168,10 @@ export default function ComparePage() {
                 width: "100%",
                 padding: "10px 12px",
                 borderRadius: "8px",
-                border: "1px solid #e5e5e5",
+                border: "1px solid var(--input-border)",
                 fontSize: "13px",
-                backgroundColor: "#ffffff",
-                color: "#0f1117",
+                backgroundColor: "var(--input-bg)",
+                color: "var(--text-primary)",
                 outline: "none",
               }}
             >
@@ -189,7 +189,7 @@ export default function ComparePage() {
               style={{
                 display: "block",
                 fontSize: "12px",
-                color: "#555555",
+                color: "var(--text-secondary)",
                 fontWeight: 500,
                 marginBottom: "6px",
               }}
@@ -203,10 +203,10 @@ export default function ComparePage() {
                 width: "100%",
                 padding: "10px 12px",
                 borderRadius: "8px",
-                border: "1px solid #e5e5e5",
+                border: "1px solid var(--input-border)",
                 fontSize: "13px",
-                backgroundColor: "#ffffff",
-                color: "#0f1117",
+                backgroundColor: "var(--input-bg)",
+                color: "var(--text-primary)",
                 outline: "none",
               }}
             >
@@ -254,17 +254,17 @@ export default function ComparePage() {
           >
             <div
               style={{
-                backgroundColor: "#ffffff",
+                backgroundColor: "var(--bg-card)",
                 borderRadius: "12px",
                 padding: "16px 20px",
-                border: "0.5px solid #ebebeb",
+                border: "0.5px solid var(--border-card)",
                 borderLeft: "4px solid #f59e0b",
               }}
             >
               <div
                 style={{
                   fontSize: "11px",
-                  color: "#888888",
+                  color: "var(--text-muted)",
                   textTransform: "uppercase",
                   letterSpacing: "0.06em",
                   marginBottom: "4px",
@@ -272,27 +272,27 @@ export default function ComparePage() {
               >
                 Report A
               </div>
-              <div style={{ fontSize: "16px", fontWeight: 500, color: "#0f1117" }}>
+              <div style={{ fontSize: "16px", fontWeight: 500, color: "var(--text-primary)" }}>
                 {comparisonData.report_a.report_name || comparisonData.report_a.filename}
               </div>
-              <div style={{ fontSize: "12px", color: "#888888", marginTop: "2px" }}>
+              <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "2px" }}>
                 {comparisonData.report_a.date_range_start} to {comparisonData.report_a.date_range_end}
               </div>
             </div>
 
             <div
               style={{
-                backgroundColor: "#ffffff",
+                backgroundColor: "var(--bg-card)",
                 borderRadius: "12px",
                 padding: "16px 20px",
-                border: "0.5px solid #ebebeb",
+                border: "0.5px solid var(--border-card)",
                 borderLeft: "4px solid #94a3b8",
               }}
             >
               <div
                 style={{
                   fontSize: "11px",
-                  color: "#888888",
+                  color: "var(--text-muted)",
                   textTransform: "uppercase",
                   letterSpacing: "0.06em",
                   marginBottom: "4px",
@@ -300,10 +300,10 @@ export default function ComparePage() {
               >
                 Report B
               </div>
-              <div style={{ fontSize: "16px", fontWeight: 500, color: "#0f1117" }}>
+              <div style={{ fontSize: "16px", fontWeight: 500, color: "var(--text-primary)" }}>
                 {comparisonData.report_b.report_name || comparisonData.report_b.filename}
               </div>
-              <div style={{ fontSize: "12px", color: "#888888", marginTop: "2px" }}>
+              <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "2px" }}>
                 {comparisonData.report_b.date_range_start} to {comparisonData.report_b.date_range_end}
               </div>
             </div>
@@ -319,16 +319,16 @@ export default function ComparePage() {
           >
             <div
               style={{
-                backgroundColor: "#ffffff",
+                backgroundColor: "var(--bg-card)",
                 borderRadius: "10px",
                 padding: "16px 20px",
-                border: "0.5px solid #ebebeb",
+                border: "0.5px solid var(--border-card)",
               }}
             >
               <div
                 style={{
                   fontSize: "11px",
-                  color: "#888888",
+                  color: "var(--text-muted)",
                   textTransform: "uppercase",
                   letterSpacing: "0.06em",
                   marginBottom: "12px",
@@ -338,13 +338,13 @@ export default function ComparePage() {
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "6px" }}>
                 <span style={{ fontSize: "11px", color: "#f59e0b", fontWeight: 600 }}>A</span>
-                <span style={{ fontSize: "16px", fontWeight: 500, color: "#0f1117" }}>
+                <span style={{ fontSize: "16px", fontWeight: 500, color: "var(--text-primary)" }}>
                   {formatRevenue(comparisonData.report_a.total_revenue)}
                 </span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                 <span style={{ fontSize: "11px", color: "#94a3b8", fontWeight: 600 }}>B</span>
-                <span style={{ fontSize: "16px", fontWeight: 500, color: "#0f1117" }}>
+                <span style={{ fontSize: "16px", fontWeight: 500, color: "var(--text-primary)" }}>
                   {formatRevenue(comparisonData.report_b.total_revenue)}
                 </span>
               </div>
@@ -352,16 +352,16 @@ export default function ComparePage() {
 
             <div
               style={{
-                backgroundColor: "#ffffff",
+                backgroundColor: "var(--bg-card)",
                 borderRadius: "10px",
                 padding: "16px 20px",
-                border: "0.5px solid #ebebeb",
+                border: "0.5px solid var(--border-card)",
               }}
             >
               <div
                 style={{
                   fontSize: "11px",
-                  color: "#888888",
+                  color: "var(--text-muted)",
                   textTransform: "uppercase",
                   letterSpacing: "0.06em",
                   marginBottom: "12px",
@@ -371,13 +371,13 @@ export default function ComparePage() {
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "6px" }}>
                 <span style={{ fontSize: "11px", color: "#f59e0b", fontWeight: 600 }}>A</span>
-                <span style={{ fontSize: "16px", fontWeight: 500, color: "#0f1117" }}>
+                <span style={{ fontSize: "16px", fontWeight: 500, color: "var(--text-primary)" }}>
                   {comparisonData.report_a.total_orders}
                 </span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                 <span style={{ fontSize: "11px", color: "#94a3b8", fontWeight: 600 }}>B</span>
-                <span style={{ fontSize: "16px", fontWeight: 500, color: "#0f1117" }}>
+                <span style={{ fontSize: "16px", fontWeight: 500, color: "var(--text-primary)" }}>
                   {comparisonData.report_b.total_orders}
                 </span>
               </div>
@@ -385,16 +385,16 @@ export default function ComparePage() {
 
             <div
               style={{
-                backgroundColor: "#ffffff",
+                backgroundColor: "var(--bg-card)",
                 borderRadius: "10px",
                 padding: "16px 20px",
-                border: "0.5px solid #ebebeb",
+                border: "0.5px solid var(--border-card)",
               }}
             >
               <div
                 style={{
                   fontSize: "11px",
-                  color: "#888888",
+                  color: "var(--text-muted)",
                   textTransform: "uppercase",
                   letterSpacing: "0.06em",
                   marginBottom: "12px",
@@ -404,13 +404,13 @@ export default function ComparePage() {
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "6px" }}>
                 <span style={{ fontSize: "11px", color: "#f59e0b", fontWeight: 600 }}>A</span>
-                <span style={{ fontSize: "16px", fontWeight: 500, color: "#0f1117" }}>
+                <span style={{ fontSize: "16px", fontWeight: 500, color: "var(--text-primary)" }}>
                   {formatRevenue(comparisonData.report_a.avg_order_value)}
                 </span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                 <span style={{ fontSize: "11px", color: "#94a3b8", fontWeight: 600 }}>B</span>
-                <span style={{ fontSize: "16px", fontWeight: 500, color: "#0f1117" }}>
+                <span style={{ fontSize: "16px", fontWeight: 500, color: "var(--text-primary)" }}>
                   {formatRevenue(comparisonData.report_b.avg_order_value)}
                 </span>
               </div>
@@ -418,16 +418,16 @@ export default function ComparePage() {
 
             <div
               style={{
-                backgroundColor: "#ffffff",
+                backgroundColor: "var(--bg-card)",
                 borderRadius: "10px",
                 padding: "16px 20px",
-                border: "0.5px solid #ebebeb",
+                border: "0.5px solid var(--border-card)",
               }}
             >
               <div
                 style={{
                   fontSize: "11px",
-                  color: "#888888",
+                  color: "var(--text-muted)",
                   textTransform: "uppercase",
                   letterSpacing: "0.06em",
                   marginBottom: "12px",
@@ -437,13 +437,13 @@ export default function ComparePage() {
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "6px" }}>
                 <span style={{ fontSize: "11px", color: "#f59e0b", fontWeight: 600 }}>A</span>
-                <span style={{ fontSize: "16px", fontWeight: 500, color: "#0f1117" }}>
+                <span style={{ fontSize: "16px", fontWeight: 500, color: "var(--text-primary)" }}>
                   {comparisonData.report_a.peak_day}
                 </span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                 <span style={{ fontSize: "11px", color: "#94a3b8", fontWeight: 600 }}>B</span>
-                <span style={{ fontSize: "16px", fontWeight: 500, color: "#0f1117" }}>
+                <span style={{ fontSize: "16px", fontWeight: 500, color: "var(--text-primary)" }}>
                   {comparisonData.report_b.peak_day}
                 </span>
               </div>
@@ -453,17 +453,17 @@ export default function ComparePage() {
           {/* Revenue Chart Card */}
           <div
             style={{
-              backgroundColor: "#ffffff",
+              backgroundColor: "var(--bg-card)",
               borderRadius: "12px",
               padding: "20px 24px",
-              border: "0.5px solid #ebebeb",
+              border: "0.5px solid var(--border-card)",
             }}
           >
             <div
               style={{
                 fontSize: "11px",
                 fontWeight: 500,
-                color: "#888888",
+                color: "var(--text-muted)",
                 textTransform: "uppercase",
                 letterSpacing: "0.06em",
                 marginBottom: "16px",
@@ -483,17 +483,17 @@ export default function ComparePage() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
             <div
               style={{
-                backgroundColor: "#ffffff",
+                backgroundColor: "var(--bg-card)",
                 borderRadius: "12px",
                 padding: "20px 24px",
-                border: "0.5px solid #ebebeb",
+                border: "0.5px solid var(--border-card)",
               }}
             >
               <div
                 style={{
                   fontSize: "11px",
                   fontWeight: 500,
-                  color: "#888888",
+                  color: "var(--text-muted)",
                   textTransform: "uppercase",
                   letterSpacing: "0.06em",
                   marginBottom: "16px",
@@ -502,7 +502,7 @@ export default function ComparePage() {
                 Top Items - {comparisonData.report_a.report_name || comparisonData.report_a.filename}
               </div>
               {comparisonData.report_a.top_items.length === 0 ? (
-                <div style={{ fontSize: "13px", color: "#888888" }}>No item data</div>
+                <div style={{ fontSize: "13px", color: "var(--text-muted)" }}>No item data</div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                   {comparisonData.report_a.top_items.map((item, index) => (
@@ -515,14 +515,14 @@ export default function ComparePage() {
                         fontSize: "13px",
                       }}
                     >
-                      <div style={{ color: "#0f1117", fontWeight: 500 }}>
+                      <div style={{ color: "var(--text-primary)", fontWeight: 500 }}>
                         {index + 1}. {item.item_name}
                       </div>
                       <div style={{ textAlign: "right" }}>
-                        <span style={{ color: "#0f1117", fontWeight: 500 }}>
+                        <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>
                           {formatRevenue(item.total_revenue)}
                         </span>
-                        <span style={{ color: "#888888", marginLeft: "6px", fontSize: "11px" }}>
+                        <span style={{ color: "var(--text-muted)", marginLeft: "6px", fontSize: "11px" }}>
                           ({item.quantity} sold)
                         </span>
                       </div>
@@ -534,17 +534,17 @@ export default function ComparePage() {
 
             <div
               style={{
-                backgroundColor: "#ffffff",
+                backgroundColor: "var(--bg-card)",
                 borderRadius: "12px",
                 padding: "20px 24px",
-                border: "0.5px solid #ebebeb",
+                border: "0.5px solid var(--border-card)",
               }}
             >
               <div
                 style={{
                   fontSize: "11px",
                   fontWeight: 500,
-                  color: "#888888",
+                  color: "var(--text-muted)",
                   textTransform: "uppercase",
                   letterSpacing: "0.06em",
                   marginBottom: "16px",
@@ -553,7 +553,7 @@ export default function ComparePage() {
                 Top Items - {comparisonData.report_b.report_name || comparisonData.report_b.filename}
               </div>
               {comparisonData.report_b.top_items.length === 0 ? (
-                <div style={{ fontSize: "13px", color: "#888888" }}>No item data</div>
+                <div style={{ fontSize: "13px", color: "var(--text-muted)" }}>No item data</div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                   {comparisonData.report_b.top_items.map((item, index) => (
@@ -566,14 +566,14 @@ export default function ComparePage() {
                         fontSize: "13px",
                       }}
                     >
-                      <div style={{ color: "#0f1117", fontWeight: 500 }}>
+                      <div style={{ color: "var(--text-primary)", fontWeight: 500 }}>
                         {index + 1}. {item.item_name}
                       </div>
                       <div style={{ textAlign: "right" }}>
-                        <span style={{ color: "#0f1117", fontWeight: 500 }}>
+                        <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>
                           {formatRevenue(item.total_revenue)}
                         </span>
-                        <span style={{ color: "#888888", marginLeft: "6px", fontSize: "11px" }}>
+                        <span style={{ color: "var(--text-muted)", marginLeft: "6px", fontSize: "11px" }}>
                           ({item.quantity} sold)
                         </span>
                       </div>

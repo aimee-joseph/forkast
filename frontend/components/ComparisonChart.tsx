@@ -52,19 +52,19 @@ export default function ComparisonChart({
       return (
         <div
           style={{
-            backgroundColor: "#ffffff",
+            backgroundColor: "var(--menu-bg)",
             borderRadius: "8px",
-            border: "1px solid #f0f0f0",
+            border: "1px solid var(--border-subtle)",
             padding: "8px 12px",
             fontSize: "13px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
           }}
         >
-          <div style={{ color: "#888888", marginBottom: "4px" }}>{label}</div>
+          <div style={{ color: "var(--text-muted)", marginBottom: "4px" }}>{label}</div>
           {payload.map((entry: any, index: number) => (
             <div
               key={`item-${index}`}
-              style={{ color: "#0f1117", fontWeight: 500, margin: "2px 0" }}
+              style={{ color: "var(--text-primary)", fontWeight: 500, margin: "2px 0" }}
             >
               <span style={{ color: entry.color }}>{entry.name}</span>: ₹
               {Number(entry.value).toLocaleString("en-IN", {
@@ -83,15 +83,15 @@ export default function ComparisonChart({
     <div style={{ width: "100%", height: 220 }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" vertical={false} />
           <XAxis
             dataKey="day"
-            tick={{ fontSize: 11, fill: "#888888" }}
+            tick={{ fontSize: 11, fill: "var(--text-muted)" }}
             tickLine={false}
             axisLine={false}
           />
           <YAxis
-            tick={{ fontSize: 11, fill: "#888888" }}
+            tick={{ fontSize: 11, fill: "var(--text-muted)" }}
             tickLine={false}
             axisLine={false}
             width={48}

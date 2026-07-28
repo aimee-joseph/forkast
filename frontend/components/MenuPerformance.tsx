@@ -45,7 +45,7 @@ export default function MenuPerformance({
           style={{
             fontSize: "10px",
             fontWeight: 500,
-            color: "#888888",
+            color: "var(--text-muted)",
             textTransform: "uppercase",
             letterSpacing: "0.06em",
             marginBottom: "10px",
@@ -81,7 +81,7 @@ export default function MenuPerformance({
                   title={item.item_name}
                   style={{
                     fontSize: "12px",
-                    color: "#0f1117",
+                    color: "var(--text-primary)",
                     fontWeight: 500,
                     maxWidth: "140px",
                     minWidth: "100px",
@@ -96,7 +96,7 @@ export default function MenuPerformance({
                   style={{
                     flex: 1,
                     height: "6px",
-                    backgroundColor: "#f0ede8",
+                    backgroundColor: "var(--border-subtle)",
                     borderRadius: "3px",
                     overflow: "hidden",
                     position: "relative",
@@ -115,7 +115,7 @@ export default function MenuPerformance({
                 <div
                   style={{
                     fontSize: "11px",
-                    color: "#888888",
+                    color: "var(--text-muted)",
                     textAlign: "right",
                     minWidth: "64px",
                   }}
@@ -142,8 +142,8 @@ export default function MenuPerformance({
             cursor: "pointer",
             fontFamily: "inherit",
             backgroundColor: viewMode === "revenue" ? "#f59e0b" : "transparent",
-            color: viewMode === "revenue" ? "#ffffff" : "#888888",
-            border: viewMode === "revenue" ? "none" : "0.5px solid #e5e5e5",
+            color: viewMode === "revenue" ? "#ffffff" : "var(--text-muted)",
+            border: viewMode === "revenue" ? "none" : "0.5px solid var(--input-border)",
           }}
         >
           ₹ Revenue
@@ -157,8 +157,8 @@ export default function MenuPerformance({
             cursor: "pointer",
             fontFamily: "inherit",
             backgroundColor: viewMode === "percent" ? "#f59e0b" : "transparent",
-            color: viewMode === "percent" ? "#ffffff" : "#888888",
-            border: viewMode === "percent" ? "none" : "0.5px solid #e5e5e5",
+            color: viewMode === "percent" ? "#ffffff" : "var(--text-muted)",
+            border: viewMode === "percent" ? "none" : "0.5px solid var(--input-border)",
           }}
         >
           % Share
@@ -174,7 +174,7 @@ export default function MenuPerformance({
       )}
       <div
         style={{
-          borderBottom: "1px solid #f0f0f0",
+          borderBottom: "1px solid var(--border-subtle)",
           margin: "16px 0",
         }}
       />

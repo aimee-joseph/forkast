@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { BarChart2, Upload, FileText, GitCompare, Settings, LogOut } from "lucide-react";
+import { BarChart2, Upload, FileText, GitCompare, Settings, LogOut, Sun, Moon } from "lucide-react";
+import { useTheme } from "next-themes";
 import { supabase } from "@/lib/supabase";
 
 interface UserInfo {
@@ -15,6 +16,9 @@ interface UserInfo {
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
   const [user, setUser] = useState<UserInfo | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isLogoutHovered, setIsLogoutHovered] = useState(false);
@@ -191,6 +195,27 @@ export default function Sidebar() {
             </div>
           </div>
         )}
+
+        <button
+          onClick={() => setTheme(isDark ? "light" : "dark")}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "8px 10px",
+            gap: "9px",
+            fontSize: "13px",
+            color: "rgba(255, 255, 255, 0.45)",
+            backgroundColor: "transparent",
+            border: "none",
+            borderRadius: "6px",
+            width: "100%",
+            textAlign: "left",
+            cursor: "pointer",
+          }}
+        >
+          {isDark ? <Sun size={16} /> : <Moon size={16} />}
+          <span>{isDark ? "Light mode" : "Dark mode"}</span>
+        </button>
 
         <button
           onClick={handleSignOut}

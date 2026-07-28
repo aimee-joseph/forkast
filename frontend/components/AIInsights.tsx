@@ -7,7 +7,7 @@ export default function AIInsights({ bullets }: AIInsightsProps) {
     return (
       <div
         style={{
-          color: "#888888",
+          color: "var(--text-muted)",
           fontSize: "13px",
           textAlign: "center",
           padding: "24px 0",
@@ -30,7 +30,7 @@ export default function AIInsights({ bullets }: AIInsightsProps) {
               gap: "12px",
               paddingBottom: "12px",
               marginBottom: isLast ? 0 : "12px",
-              borderBottom: isLast ? "none" : "0.5px solid #f5f5f5",
+              borderBottom: isLast ? "none" : "0.5px solid var(--border-subtle)",
             }}
           >
             <div
@@ -46,7 +46,7 @@ export default function AIInsights({ bullets }: AIInsightsProps) {
             <div
               style={{
                 fontSize: "13px",
-                color: "#555555",
+                color: "var(--text-secondary)",
                 lineHeight: 1.6,
               }}
             >
@@ -58,7 +58,7 @@ export default function AIInsights({ bullets }: AIInsightsProps) {
       <div
         style={{
           fontSize: "11px",
-          color: "#bbbbbb",
+          color: "var(--text-faint)",
           marginTop: "12px",
         }}
       >

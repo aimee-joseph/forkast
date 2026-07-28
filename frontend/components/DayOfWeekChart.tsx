@@ -38,16 +38,16 @@ export default function DayOfWeekChart({ data }: DayOfWeekChartProps) {
       return (
         <div
           style={{
-            backgroundColor: "#ffffff",
+            backgroundColor: "var(--menu-bg)",
             borderRadius: "8px",
-            border: "1px solid #f0f0f0",
+            border: "1px solid var(--border-subtle)",
             padding: "8px 12px",
             fontSize: "13px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
           }}
         >
-          <div style={{ color: "#888888", marginBottom: "4px" }}>{day}</div>
-          <div style={{ color: "#0f1117", fontWeight: 500 }}>
+          <div style={{ color: "var(--text-muted)", marginBottom: "4px" }}>{day}</div>
+          <div style={{ color: "var(--text-primary)", fontWeight: 500 }}>
             Revenue: ₹
             {revenue.toLocaleString("en-IN", {
               minimumFractionDigits: 2,
@@ -72,7 +72,7 @@ export default function DayOfWeekChart({ data }: DayOfWeekChartProps) {
           <YAxis
             type="category"
             dataKey="day"
-            tick={{ fontSize: 11, fill: "#888888" }}
+            tick={{ fontSize: 11, fill: "var(--text-muted)" }}
             tickLine={false}
             axisLine={false}
             width={80}

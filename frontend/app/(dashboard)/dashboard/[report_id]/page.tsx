@@ -160,7 +160,7 @@ export default function ReportDashboard() {
           alignItems: "center",
           justifyContent: "center",
           height: "calc(100vh - 64px)",
-          color: "rgba(0, 0, 0, 0.4)",
+          color: "var(--text-muted)",
           fontSize: "13px",
         }}
       >
@@ -203,7 +203,7 @@ export default function ReportDashboard() {
         <div>
           {!isEditingName ? (
             <div style={{ display: "flex", alignItems: "center", marginBottom: "4px" }}>
-              <h1 style={{ fontSize: "20px", fontWeight: 500, color: "#0f1117", margin: 0 }}>
+              <h1 style={{ fontSize: "20px", fontWeight: 500, color: "var(--text-primary)", margin: 0 }}>
                 {report.report_name || report.filename}
               </h1>
               <button
@@ -216,7 +216,7 @@ export default function ReportDashboard() {
                 style={{
                   background: "none",
                   border: "none",
-                  color: isPencilHovered ? "#555555" : "#aaaaaa",
+                  color: isPencilHovered ? "var(--text-secondary)" : "var(--text-faint)",
                   cursor: "pointer",
                   padding: "4px",
                   marginLeft: "6px",
@@ -240,7 +240,7 @@ export default function ReportDashboard() {
                 style={{
                   fontSize: "20px",
                   fontWeight: 500,
-                  color: "#0f1117",
+                  color: "var(--text-primary)",
                   border: "none",
                   borderBottom: "1.5px solid #f59e0b",
                   outline: "none",
@@ -282,7 +282,7 @@ export default function ReportDashboard() {
               </button>
             </div>
           )}
-          <p style={{ color: "#888888", fontSize: "13px", margin: 0 }}>
+          <p style={{ color: "var(--text-muted)", fontSize: "13px", margin: 0 }}>
             {report.date_range_start} to {report.date_range_end} &bull; {report.total_orders} orders
           </p>
         </div>
@@ -292,9 +292,9 @@ export default function ReportDashboard() {
             onClick={handleExport}
             disabled={exporting}
             style={{
-              border: "0.5px solid #e5e5e5",
-              backgroundColor: "#ffffff",
-              color: "#555555",
+              border: "0.5px solid var(--input-border)",
+              backgroundColor: "var(--bg-card)",
+              color: "var(--text-secondary)",
               padding: "8px 16px",
               borderRadius: "8px",
               fontSize: "13px",
@@ -340,16 +340,16 @@ export default function ReportDashboard() {
         >
           <div
             style={{
-              backgroundColor: "#ffffff",
+              backgroundColor: "var(--bg-card)",
               borderRadius: "10px",
               padding: "20px 24px",
-              border: "0.5px solid #ebebeb",
+              border: "0.5px solid var(--border-card)",
             }}
           >
             <div
               style={{
                 fontSize: "11px",
-                color: "#888888",
+                color: "var(--text-muted)",
                 textTransform: "uppercase",
                 letterSpacing: "0.06em",
                 marginBottom: "8px",
@@ -357,23 +357,23 @@ export default function ReportDashboard() {
             >
               Total Revenue
             </div>
-            <div style={{ fontSize: "24px", fontWeight: 500, color: "#0f1117" }}>
+            <div style={{ fontSize: "24px", fontWeight: 500, color: "var(--text-primary)" }}>
               {formatRevenue(report.total_revenue)}
             </div>
           </div>
 
           <div
             style={{
-              backgroundColor: "#ffffff",
+              backgroundColor: "var(--bg-card)",
               borderRadius: "10px",
               padding: "20px 24px",
-              border: "0.5px solid #ebebeb",
+              border: "0.5px solid var(--border-card)",
             }}
           >
             <div
               style={{
                 fontSize: "11px",
-                color: "#888888",
+                color: "var(--text-muted)",
                 textTransform: "uppercase",
                 letterSpacing: "0.06em",
                 marginBottom: "8px",
@@ -381,23 +381,23 @@ export default function ReportDashboard() {
             >
               Total Orders
             </div>
-            <div style={{ fontSize: "24px", fontWeight: 500, color: "#0f1117" }}>
+            <div style={{ fontSize: "24px", fontWeight: 500, color: "var(--text-primary)" }}>
               {report.total_orders}
             </div>
           </div>
 
           <div
             style={{
-              backgroundColor: "#ffffff",
+              backgroundColor: "var(--bg-card)",
               borderRadius: "10px",
               padding: "20px 24px",
-              border: "0.5px solid #ebebeb",
+              border: "0.5px solid var(--border-card)",
             }}
           >
             <div
               style={{
                 fontSize: "11px",
-                color: "#888888",
+                color: "var(--text-muted)",
                 textTransform: "uppercase",
                 letterSpacing: "0.06em",
                 marginBottom: "8px",
@@ -405,23 +405,23 @@ export default function ReportDashboard() {
             >
               Avg Order Value
             </div>
-            <div style={{ fontSize: "24px", fontWeight: 500, color: "#0f1117" }}>
+            <div style={{ fontSize: "24px", fontWeight: 500, color: "var(--text-primary)" }}>
               {formatRevenue(report.avg_order_value)}
             </div>
           </div>
 
           <div
             style={{
-              backgroundColor: "#ffffff",
+              backgroundColor: "var(--bg-card)",
               borderRadius: "10px",
               padding: "20px 24px",
-              border: "0.5px solid #ebebeb",
+              border: "0.5px solid var(--border-card)",
             }}
           >
             <div
               style={{
                 fontSize: "11px",
-                color: "#888888",
+                color: "var(--text-muted)",
                 textTransform: "uppercase",
                 letterSpacing: "0.06em",
                 marginBottom: "8px",
@@ -429,7 +429,7 @@ export default function ReportDashboard() {
             >
               Peak Day
             </div>
-            <div style={{ fontSize: "24px", fontWeight: 500, color: "#0f1117" }}>
+            <div style={{ fontSize: "24px", fontWeight: 500, color: "var(--text-primary)" }}>
               {report.peak_day}
             </div>
           </div>
@@ -445,17 +445,17 @@ export default function ReportDashboard() {
         >
           <div
             style={{
-              backgroundColor: "#ffffff",
+              backgroundColor: "var(--bg-card)",
               borderRadius: "12px",
               padding: "20px 24px",
-              border: "0.5px solid #ebebeb",
+              border: "0.5px solid var(--border-card)",
             }}
           >
             <div
               style={{
                 fontSize: "11px",
                 fontWeight: 500,
-                color: "#888888",
+                color: "var(--text-muted)",
                 textTransform: "uppercase",
                 letterSpacing: "0.06em",
                 marginBottom: "16px",
@@ -468,17 +468,17 @@ export default function ReportDashboard() {
 
           <div
             style={{
-              backgroundColor: "#ffffff",
+              backgroundColor: "var(--bg-card)",
               borderRadius: "12px",
               padding: "20px 24px",
-              border: "0.5px solid #ebebeb",
+              border: "0.5px solid var(--border-card)",
             }}
           >
             <div
               style={{
                 fontSize: "11px",
                 fontWeight: 500,
-                color: "#888888",
+                color: "var(--text-muted)",
                 textTransform: "uppercase",
                 letterSpacing: "0.06em",
                 marginBottom: "16px",
@@ -499,17 +499,17 @@ export default function ReportDashboard() {
         >
           <div
             style={{
-              backgroundColor: "#ffffff",
+              backgroundColor: "var(--bg-card)",
               borderRadius: "12px",
               padding: "20px 24px",
-              border: "0.5px solid #ebebeb",
+              border: "0.5px solid var(--border-card)",
             }}
           >
             <div
               style={{
                 fontSize: "11px",
                 fontWeight: 500,
-                color: "#888888",
+                color: "var(--text-muted)",
                 textTransform: "uppercase",
                 letterSpacing: "0.06em",
                 marginBottom: "16px",
@@ -526,17 +526,17 @@ export default function ReportDashboard() {
 
           <div
             style={{
-              backgroundColor: "#ffffff",
+              backgroundColor: "var(--bg-card)",
               borderRadius: "12px",
               padding: "20px 24px",
-              border: "0.5px solid #ebebeb",
+              border: "0.5px solid var(--border-card)",
             }}
           >
             <div
               style={{
                 fontSize: "11px",
                 fontWeight: 500,
-                color: "#888888",
+                color: "var(--text-muted)",
                 textTransform: "uppercase",
                 letterSpacing: "0.06em",
                 marginBottom: "16px",

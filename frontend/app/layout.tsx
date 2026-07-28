@@ -17,15 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={inter.className}
-        style={{
-          margin: 0,
-          padding: 0,
-          backgroundColor: "#0f1117",
-          minHeight: "100vh",
-        }}
-      >
+      <body className={inter.className}>
         <Providers>{children}</Providers>
       </body>
     </html>

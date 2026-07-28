@@ -31,11 +31,11 @@ export default function DashboardLayout({
         style={{
           width: "100vw",
           height: "100vh",
-          backgroundColor: "#0f1117",
+          backgroundColor: "var(--bg-page)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          color: "rgba(255, 255, 255, 0.4)",
+          color: "var(--text-muted)",
           fontSize: "13px",
         }}
       >
@@ -51,7 +51,7 @@ export default function DashboardLayout({
         style={{
           marginLeft: "220px",
           flex: 1,
-          backgroundColor: "#f8f7f4",
+          backgroundColor: "var(--bg-page)",
           minHeight: "100vh",
         }}
       >

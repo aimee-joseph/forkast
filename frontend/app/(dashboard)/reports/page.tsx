@@ -75,7 +75,7 @@ export default function ReportsPage() {
           alignItems: "center",
           justifyContent: "center",
           height: "calc(100vh - 64px)",
-          color: "rgba(0, 0, 0, 0.4)",
+          color: "var(--text-muted)",
           fontSize: "13px",
         }}
       >
@@ -95,10 +95,10 @@ export default function ReportsPage() {
         }}
       >
         <div>
-          <h1 style={{ fontSize: "20px", fontWeight: 500, color: "#0f1117", margin: "0 0 4px 0" }}>
+          <h1 style={{ fontSize: "20px", fontWeight: 500, color: "var(--text-primary)", margin: "0 0 4px 0" }}>
             Reports
           </h1>
-          <p style={{ color: "#888888", fontSize: "13px", margin: 0 }}>
+          <p style={{ color: "var(--text-muted)", fontSize: "13px", margin: 0 }}>
             All your uploaded reports
           </p>
         </div>
@@ -130,14 +130,14 @@ export default function ReportsPage() {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: "#ffffff",
+              backgroundColor: "var(--bg-card)",
               borderRadius: "12px",
               padding: "48px",
-              border: "0.5px solid #ebebeb",
+              border: "0.5px solid var(--border-card)",
               textAlign: "center",
             }}
           >
-            <p style={{ color: "#888888", fontSize: "14px", margin: "0 0 20px 0" }}>
+            <p style={{ color: "var(--text-muted)", fontSize: "14px", margin: "0 0 20px 0" }}>
               No reports yet. Upload your first CSV to get started.
             </p>
             <Link
@@ -171,10 +171,10 @@ export default function ReportsPage() {
                   router.push(`/dashboard/${report.id}`);
                 }}
                 style={{
-                  backgroundColor: "#ffffff",
+                  backgroundColor: "var(--bg-card)",
                   borderRadius: "10px",
                   padding: "16px 20px",
-                  border: "0.5px solid #ebebeb",
+                  border: "0.5px solid var(--border-card)",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
@@ -183,19 +183,19 @@ export default function ReportsPage() {
                 }}
               >
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: "14px", color: "#0f1117", fontWeight: 500, marginBottom: "4px" }}>
+                  <div style={{ fontSize: "14px", color: "var(--text-primary)", fontWeight: 500, marginBottom: "4px" }}>
                     {report.report_name || report.filename}
                   </div>
-                  <div style={{ fontSize: "12px", color: "#888888" }}>
+                  <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>
                     {report.date_range_start} to {report.date_range_end}
                   </div>
                 </div>
 
                 <div style={{ textAlign: "right", minWidth: "120px" }}>
-                  <div style={{ fontSize: "14px", color: "#0f1117", fontWeight: 500, marginBottom: "4px" }}>
+                  <div style={{ fontSize: "14px", color: "var(--text-primary)", fontWeight: 500, marginBottom: "4px" }}>
                     {formatRevenue(report.total_revenue)}
                   </div>
-                  <div style={{ fontSize: "12px", color: "#888888" }}>
+                  <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>
                     {report.total_orders} orders
                   </div>
                 </div>
@@ -211,7 +211,7 @@ export default function ReportsPage() {
                       background: "none",
                       border: "none",
                       cursor: "pointer",
-                      color: "#aaaaaa",
+                      color: "var(--text-faint)",
                       padding: "4px",
                       borderRadius: "4px",
                       display: "flex",
@@ -228,9 +228,9 @@ export default function ReportsPage() {
                         position: "absolute",
                         right: 0,
                         top: "100%",
-                        backgroundColor: "white",
+                        backgroundColor: "var(--menu-bg)",
                         borderRadius: "8px",
-                        border: "0.5px solid #e5e5e5",
+                        border: "0.5px solid var(--input-border)",
                         boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
                         zIndex: 20,
                         minWidth: "120px",
@@ -248,7 +248,7 @@ export default function ReportsPage() {
                             background: "none",
                             border: "none",
                             cursor: "pointer",
-                            color: "#aaaaaa",
+                            color: "var(--text-faint)",
                             padding: "2px",
                             display: "flex",
                             alignItems: "center",
@@ -274,9 +274,9 @@ export default function ReportsPage() {
                           border: "none",
                           borderRadius: "6px",
                           fontFamily: "inherit",
-                          color: "#0f1117",
+                          color: "var(--text-primary)",
                         }}
-                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f8f7f4")}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--menu-hover)")}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
                       >
                         Download PDF
@@ -300,7 +300,7 @@ export default function ReportsPage() {
                           fontFamily: "inherit",
                           color: "#ef4444",
                         }}
-                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f8f7f4")}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--menu-hover)")}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
                       >
                         Delete
