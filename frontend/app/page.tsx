@@ -11,10 +11,12 @@ export default function Home() {
   const isDark = resolvedTheme === "dark";
 
   const [mounted, setMounted] = useState(false);
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [restaurantName, setRestaurantName] = useState("");
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotSent, setForgotSent] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,6 +36,18 @@ export default function Home() {
     checkSession();
   }, [router]);
 
+  const getFriendlyError = (message: string): string => {
+    if (message.includes("Invalid login credentials"))
+      return "No account found with these credentials.";
+    if (message.includes("Email not confirmed"))
+      return "Please confirm your email before signing in.";
+    if (message.includes("User already registered"))
+      return "An account with this email already exists. Sign in instead.";
+    if (message.includes("Password should be at least"))
+      return "Password must be at least 6 characters.";
+    return message;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -45,7 +59,7 @@ export default function Home() {
         if (!restaurantName.trim()) {
           throw new Error("Restaurant name is required");
         }
-        const { data, error: signUpError } = await supabase.auth.signUp({
+        const { error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -57,8 +71,9 @@ export default function Home() {
 
         if (signUpError) throw signUpError;
 
-
-        setSuccessMessage("Check your email to confirm your account.");
+        setSuccessMessage(
+          "Check your email for a confirmation link. Click it to activate your account."
+        );
       } else {
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
@@ -69,7 +84,25 @@ export default function Home() {
         router.push("/dashboard");
       }
     } catch (err: any) {
-      setError(err.message || "An error occurred");
+      setError(getFriendlyError(err.message || "An error occurred"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(
+        forgotEmail,
+        { redirectTo: `${window.location.origin}/auth/reset-password` }
+      );
+      if (error) throw error;
+      setForgotSent(true);
+    } catch (err: any) {
+      setError(getFriendlyError(err.message || "Failed to send reset email"));
     } finally {
       setLoading(false);
     }
@@ -129,10 +162,81 @@ export default function Home() {
             margin: "0 0 24px 0",
           }}
         >
-          {mode === "login" ? "Sign in to your account" : "Create your account"}
+          {mode === "login"
+            ? "Sign in to your account"
+            : mode === "signup"
+            ? "Create your account"
+            : "Reset your password"}
         </p>
 
-        {successMessage ? (
+        {mode === "forgot" ? (
+          <div>
+            {!forgotSent ? (
+              <form onSubmit={handleForgotPassword}>
+                <input
+                  type="email"
+                  placeholder="Email address"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  onFocus={() => setFocusedField("forgotEmail")}
+                  onBlur={() => setFocusedField(null)}
+                  style={getInputStyle("forgotEmail")}
+                  required
+                />
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  style={{
+                    width: "100%",
+                    backgroundColor: "#f59e0b",
+                    color: "#ffffff",
+                    border: "none",
+                    padding: "11px",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    cursor: loading ? "not-allowed" : "pointer",
+                    opacity: loading ? 0.7 : 1,
+                    transition: "opacity 0.2s",
+                  }}
+                >
+                  {loading ? "Please wait..." : "Send reset link"}
+                </button>
+              </form>
+            ) : (
+              <div
+                style={{
+                  color: "#22c55e",
+                  fontSize: "13px",
+                  textAlign: "center",
+                  marginBottom: "16px",
+                }}
+              >
+                Password reset link sent. Check your email.
+              </div>
+            )}
+
+            <div
+              style={{
+                marginTop: "20px",
+                textAlign: "center",
+                fontSize: "13px",
+              }}
+            >
+              <span
+                onClick={() => {
+                  setMode("login");
+                  setForgotSent(false);
+                  setError("");
+                }}
+                style={{ color: "#f59e0b", cursor: "pointer", fontWeight: 500 }}
+              >
+                Back to login
+              </span>
+            </div>
+          </div>
+        ) : successMessage ? (
           <div
             style={{
               color: "#155724",
@@ -183,6 +287,25 @@ export default function Home() {
               required
             />
 
+            {mode === "login" && (
+              <div style={{ textAlign: "right", marginTop: "-4px", marginBottom: "16px" }}>
+                <span
+                  onClick={() => {
+                    setMode("forgot");
+                    setError("");
+                  }}
+                  style={{
+                    color: "#f59e0b",
+                    fontSize: "12px",
+                    cursor: "pointer",
+                    fontWeight: 500,
+                  }}
+                >
+                  Forgot password?
+                </span>
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={loading}
@@ -211,7 +334,7 @@ export default function Home() {
           </div>
         )}
 
-        {!successMessage && (
+        {!successMessage && mode !== "forgot" && (
           <div
             style={{
               marginTop: "20px",
