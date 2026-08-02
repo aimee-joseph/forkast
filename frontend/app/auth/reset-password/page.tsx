@@ -72,6 +72,7 @@ export default function ResetPasswordPage() {
     try {
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
+      await supabase.auth.signOut();
       setStatus("success");
       setTimeout(() => {
         router.push("/");
@@ -274,7 +275,7 @@ export default function ResetPasswordPage() {
                 marginTop: "8px",
               }}
             >
-              Redirecting to login...
+              Your password has been updated. Please sign in with your new password.
             </p>
           </div>
         )}

@@ -18,15 +18,43 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     async function verifyAuth() {
       try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error || !session) {
-          setStatus("error");
-        } else {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session) {
           setStatus("success");
           setTimeout(() => {
             router.push("/dashboard");
           }, 2000);
+          return;
         }
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          (event, session) => {
+            if (event === "SIGNED_IN" && session) {
+              setStatus("success");
+              subscription.unsubscribe();
+              setTimeout(() => {
+                router.push("/dashboard");
+              }, 2000);
+            } else if (event === "TOKEN_REFRESHED") {
+              // ignore
+            } else if (!session) {
+              setStatus("error");
+              subscription.unsubscribe();
+            }
+          }
+        );
+
+        setTimeout(() => {
+          setStatus((prev) => {
+            if (prev === "loading") {
+              subscription.unsubscribe();
+              return "error";
+            }
+            return prev;
+          });
+        }, 5000);
+
       } catch {
         setStatus("error");
       }
