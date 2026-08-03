@@ -95,6 +95,16 @@ export default function Home() {
     setError("");
     setLoading(true);
     try {
+      const { data, error: profileError } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("owner_name", forgotEmail)
+        .maybeSingle();
+
+      if (profileError || !data) {
+        throw new Error("No account found with this email address.");
+      }
+
       const { error } = await supabase.auth.resetPasswordForEmail(
         forgotEmail,
         { redirectTo: `${window.location.origin}/auth/reset-password` }
@@ -102,7 +112,7 @@ export default function Home() {
       if (error) throw error;
       setForgotSent(true);
     } catch (err: any) {
-      setError(getFriendlyError(err.message || "Failed to send reset email"));
+      setError(err.message || "Failed to send reset email");
     } finally {
       setLoading(false);
     }
