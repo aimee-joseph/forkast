@@ -38,7 +38,7 @@ export default function Home() {
 
   const getFriendlyError = (message: string): string => {
     if (message.includes("Invalid login credentials"))
-      return "No account found with these credentials.";
+      return "Incorrect email or password. Please try again.";
     if (message.includes("Email not confirmed"))
       return "Please confirm your email before signing in.";
     if (message.includes("User already registered"))
@@ -95,16 +95,6 @@ export default function Home() {
     setError("");
     setLoading(true);
     try {
-      const { data, error: profileError } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("owner_name", forgotEmail)
-        .maybeSingle();
-
-      if (profileError || !data) {
-        throw new Error("No account found with this email address.");
-      }
-
       const { error } = await supabase.auth.resetPasswordForEmail(
         forgotEmail,
         { redirectTo: `${window.location.origin}/auth/reset-password` }
@@ -223,7 +213,7 @@ export default function Home() {
                   marginBottom: "16px",
                 }}
               >
-                Password reset link sent. Check your email.
+                If an account exists with this email, a reset link has been sent.
               </div>
             )}
 
