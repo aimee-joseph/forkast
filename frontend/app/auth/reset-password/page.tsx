@@ -2,23 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
 import { supabase } from "@/lib/supabase";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
   const [status, setStatus] = useState<"loading" | "form" | "success" | "error">("loading");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     async function verifyResetLink() {
@@ -36,20 +29,18 @@ export default function ResetPasswordPage() {
     verifyResetLink();
   }, []);
 
-  const safeDark = mounted && resolvedTheme === "dark";
-
   const getInputStyle = (field: string): React.CSSProperties => ({
     width: "100%",
     boxSizing: "border-box",
     padding: "10px 12px",
     borderRadius: "8px",
-    border: `1px solid ${focusedField === field ? "#f59e0b" : safeDark ? "rgba(255,255,255,0.12)" : "#e5e5e5"}`,
+    border: `1px solid ${focusedField === field ? "#d98a5f" : "rgba(255,255,255,0.12)"}`,
     fontSize: "14px",
     marginBottom: "12px",
     outline: "none",
     fontFamily: "inherit",
-    backgroundColor: safeDark ? "rgba(255,255,255,0.05)" : "#ffffff",
-    color: safeDark ? "#f0f0f0" : "#0f1117",
+    backgroundColor: "rgba(255,255,255,0.04)",
+    color: "#f2f2f0",
     transition: "border-color 0.2s",
   });
 
@@ -75,7 +66,7 @@ export default function ResetPasswordPage() {
       await supabase.auth.signOut();
       setStatus("success");
       setTimeout(() => {
-        router.push("/");
+        router.push("/login");
       }, 2000);
     } catch (err: any) {
       setError(err.message || "Failed to update password.");
@@ -89,10 +80,11 @@ export default function ResetPasswordPage() {
       style={{
         width: "100vw",
         height: "100vh",
-        backgroundColor: "var(--bg-page)",
+        backgroundColor: "#0a0a0a",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        fontFamily: "system-ui, -apple-system, sans-serif",
       }}
     >
       <style>{`
@@ -103,11 +95,11 @@ export default function ResetPasswordPage() {
       `}</style>
       <div
         style={{
-          backgroundColor: safeDark ? "#1e2129" : "#ffffff",
+          backgroundColor: "#111111",
+          border: "0.5px solid rgba(255,255,255,0.08)",
           borderRadius: "12px",
           padding: "36px",
           width: "380px",
-          boxShadow: safeDark ? "0 4px 20px rgba(0,0,0,0.4)" : "0 4px 20px rgba(0,0,0,0.08)",
           textAlign: "center",
         }}
       >
@@ -115,7 +107,7 @@ export default function ResetPasswordPage() {
           style={{
             fontSize: "18px",
             fontWeight: 500,
-            color: safeDark ? "#f0f0f0" : "#0f1117",
+            color: "#f2f2f0",
             margin: "0 0 4px 0",
           }}
         >
@@ -147,7 +139,7 @@ export default function ResetPasswordPage() {
                 fontSize: "16px",
                 fontWeight: 500,
                 marginTop: "16px",
-                color: "var(--text-muted)",
+                color: "rgba(255,255,255,0.4)",
               }}
             >
               Verifying reset link...
@@ -161,7 +153,7 @@ export default function ResetPasswordPage() {
               style={{
                 fontSize: "16px",
                 fontWeight: 500,
-                color: "var(--text-primary)",
+                color: "#f2f2f0",
                 marginTop: "16px",
                 marginBottom: 0,
               }}
@@ -171,7 +163,7 @@ export default function ResetPasswordPage() {
             <p
               style={{
                 fontSize: "13px",
-                color: "var(--text-muted)",
+                color: "rgba(255,255,255,0.4)",
                 marginTop: "4px",
                 marginBottom: "24px",
               }}
@@ -221,8 +213,8 @@ export default function ResetPasswordPage() {
                 disabled={loading}
                 style={{
                   width: "100%",
-                  backgroundColor: "#f59e0b",
-                  color: "#ffffff",
+                  backgroundColor: "#d98a5f",
+                  color: "#2c1608",
                   border: "none",
                   padding: "11px",
                   borderRadius: "8px",
@@ -263,7 +255,7 @@ export default function ResetPasswordPage() {
                 fontSize: "16px",
                 fontWeight: 500,
                 marginTop: "16px",
-                color: "var(--text-primary)",
+                color: "#f2f2f0",
               }}
             >
               Password updated!
@@ -271,7 +263,7 @@ export default function ResetPasswordPage() {
             <p
               style={{
                 fontSize: "13px",
-                color: "var(--text-muted)",
+                color: "rgba(255,255,255,0.4)",
                 marginTop: "8px",
               }}
             >
@@ -304,7 +296,7 @@ export default function ResetPasswordPage() {
                 fontSize: "16px",
                 fontWeight: 500,
                 marginTop: "16px",
-                color: "var(--text-primary)",
+                color: "#f2f2f0",
               }}
             >
               Reset link invalid or expired
@@ -312,18 +304,18 @@ export default function ResetPasswordPage() {
             <p
               style={{
                 fontSize: "13px",
-                color: "var(--text-muted)",
+                color: "rgba(255,255,255,0.4)",
                 marginTop: "8px",
               }}
             >
               Please request a new password reset.
             </p>
             <button
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/login")}
               style={{
                 width: "100%",
-                backgroundColor: "#f59e0b",
-                color: "#ffffff",
+                backgroundColor: "#d98a5f",
+                color: "#2c1608",
                 border: "none",
                 padding: "11px",
                 borderRadius: "8px",

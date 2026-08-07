@@ -2,18 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
 import { supabase } from "@/lib/supabase";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     async function verifyAuth() {
@@ -62,17 +55,16 @@ export default function AuthCallbackPage() {
     verifyAuth();
   }, [router]);
 
-  const safeDark = mounted && resolvedTheme === "dark";
-
   return (
     <div
       style={{
         width: "100vw",
         height: "100vh",
-        backgroundColor: "var(--bg-page)",
+        backgroundColor: "#0a0a0a",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        fontFamily: "system-ui, -apple-system, sans-serif",
       }}
     >
       <style>{`
@@ -83,11 +75,11 @@ export default function AuthCallbackPage() {
       `}</style>
       <div
         style={{
-          backgroundColor: safeDark ? "#1e2129" : "#ffffff",
+          backgroundColor: "#111111",
+          border: "0.5px solid rgba(255,255,255,0.08)",
           borderRadius: "12px",
           padding: "36px",
           width: "380px",
-          boxShadow: safeDark ? "0 4px 20px rgba(0,0,0,0.4)" : "0 4px 20px rgba(0,0,0,0.08)",
           textAlign: "center",
         }}
       >
@@ -95,7 +87,7 @@ export default function AuthCallbackPage() {
           style={{
             fontSize: "18px",
             fontWeight: 500,
-            color: safeDark ? "#f0f0f0" : "#0f1117",
+            color: "#f2f2f0",
             margin: "0 0 4px 0",
           }}
         >
@@ -137,7 +129,7 @@ export default function AuthCallbackPage() {
             fontWeight: 500,
             marginTop: "16px",
             marginBottom: 0,
-            color: status === "loading" ? "var(--text-muted)" : "var(--text-primary)",
+            color: status === "loading" ? "rgba(255,255,255,0.4)" : "#f2f2f0",
           }}
         >
           {status === "loading"
@@ -150,7 +142,7 @@ export default function AuthCallbackPage() {
         <p
           style={{
             fontSize: "13px",
-            color: "var(--text-muted)",
+            color: "rgba(255,255,255,0.4)",
             marginTop: "8px",
             marginBottom: 0,
           }}
@@ -164,11 +156,11 @@ export default function AuthCallbackPage() {
 
         {status === "error" && (
           <button
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/login")}
             style={{
               width: "100%",
-              backgroundColor: "#f59e0b",
-              color: "#ffffff",
+              backgroundColor: "#d98a5f",
+              color: "#2c1608",
               border: "none",
               padding: "11px",
               borderRadius: "8px",
