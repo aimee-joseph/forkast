@@ -13,6 +13,7 @@ export default function LoginPreviewPanel() {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
+        alignItems: "center",
         borderLeft: "0.5px solid rgba(255,255,255,0.08)",
         height: "100%",
         boxSizing: "border-box",
@@ -24,11 +25,13 @@ export default function LoginPreviewPanel() {
         transition={{ duration: 0.6 }}
         style={{
           fontFamily: "Georgia, serif",
-          fontSize: "22px",
+          fontSize: "26px",
           lineHeight: 1.4,
           color: "#f2f2f0",
-          maxWidth: "380px",
+          maxWidth: "420px",
+          width: "100%",
           marginBottom: "40px",
+          textAlign: "left",
         }}
       >
         The data was always there. Nobody was{" "}
@@ -44,7 +47,9 @@ export default function LoginPreviewPanel() {
           border: "0.5px solid rgba(255,255,255,0.1)",
           borderRadius: "10px",
           padding: "16px",
-          maxWidth: "380px",
+          maxWidth: "420px",
+          width: "100%",
+          textAlign: "left",
         }}
       >
         <div
