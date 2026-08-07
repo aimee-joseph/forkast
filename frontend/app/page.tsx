@@ -1,378 +1,879 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
-import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 
 export default function Home() {
-  const router = useRouter();
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-
-  const [mounted, setMounted] = useState(false);
-  const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [restaurantName, setRestaurantName] = useState("");
-  const [forgotEmail, setForgotEmail] = useState("");
-  const [forgotSent, setForgotSent] = useState(false);
-  const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [focusedField, setFocusedField] = useState<string | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    async function checkSession() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        router.push("/dashboard");
-      }
-    }
-    checkSession();
-  }, [router]);
-
-  const getFriendlyError = (message: string): string => {
-    if (message.includes("Invalid login credentials"))
-      return "Incorrect email or password. Please try again.";
-    if (message.includes("Email not confirmed"))
-      return "Please confirm your email before signing in.";
-    if (message.includes("User already registered"))
-      return "An account with this email already exists. Sign in instead.";
-    if (message.includes("Password should be at least"))
-      return "Password must be at least 6 characters.";
-    return message;
+  const scrollToComparison = () => {
+    document.getElementById("comparison")?.scrollIntoView({ behavior: "smooth" });
   };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setSuccessMessage("");
-    setLoading(true);
-
-    try {
-      if (mode === "signup") {
-        if (!restaurantName.trim()) {
-          throw new Error("Restaurant name is required");
-        }
-        const { error: signUpError } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              restaurant_name: restaurantName,
-            },
-          },
-        });
-
-        if (signUpError) throw signUpError;
-
-        setSuccessMessage(
-          "Check your email for a confirmation link. Click it to activate your account."
-        );
-      } else {
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (signInError) throw signInError;
-        router.push("/dashboard");
-      }
-    } catch (err: any) {
-      setError(getFriendlyError(err.message || "An error occurred"));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleForgotPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(
-        forgotEmail,
-        { redirectTo: `${window.location.origin}/auth/reset-password` }
-      );
-      if (error) throw error;
-      setForgotSent(true);
-    } catch (err: any) {
-      setError(err.message || "Failed to send reset email");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const safeDark = mounted && isDark;
-
-  const getInputStyle = (field: string): React.CSSProperties => ({
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "10px 12px",
-    borderRadius: "8px",
-    border: `1px solid ${focusedField === field ? "#f59e0b" : safeDark ? "rgba(255,255,255,0.12)" : "#e5e5e5"}`,
-    fontSize: "14px",
-    marginBottom: "12px",
-    outline: "none",
-    fontFamily: "inherit",
-    backgroundColor: safeDark ? "rgba(255,255,255,0.05)" : "#ffffff",
-    color: safeDark ? "#f0f0f0" : "#0f1117",
-    transition: "border-color 0.2s",
-  });
 
   return (
     <div
       style={{
-        width: "100vw",
-        height: "100vh",
-        backgroundColor: "var(--bg-page)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        backgroundColor: "#0a0a0a",
+        color: "#f2f2f0",
+        minHeight: "100vh",
+        fontFamily: "system-ui, -apple-system, sans-serif",
       }}
     >
-      <div
+      <nav
         style={{
-          backgroundColor: safeDark ? "#1e2129" : "#ffffff",
-          borderRadius: "12px",
-          padding: "36px",
-          width: "380px",
-          boxShadow: safeDark ? "0 4px 20px rgba(0,0,0,0.4)" : "0 4px 20px rgba(0,0,0,0.08)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "24px 48px",
+          borderBottom: "0.5px solid rgba(255,255,255,0.08)",
         }}
       >
+        <div style={{ fontSize: "15px", fontWeight: 500, color: "#f2f2f0" }}>
+          Forkast
+        </div>
+
+        <div style={{ display: "flex", gap: "28px", fontSize: "13px", color: "rgba(255,255,255,0.5)" }}>
+          <span>Product</span>
+          <span>Pricing</span>
+          <span>Docs</span>
+        </div>
+
+        <Link
+          href="/login"
+          style={{
+            backgroundColor: "#d98a5f",
+            color: "#2c1608",
+            fontSize: "13px",
+            fontWeight: 500,
+            padding: "7px 16px",
+            borderRadius: "6px",
+            textDecoration: "none",
+          }}
+        >
+          Start free
+        </Link>
+      </nav>
+
+      <section style={{ padding: "80px 48px 60px" }}>
         <h1
           style={{
-            fontSize: "18px",
-            fontWeight: 500,
-            color: safeDark ? "#f0f0f0" : "#0f1117",
-            margin: "0 0 4px 0",
+            fontFamily: "Georgia, serif",
+            fontSize: "52px",
+            lineHeight: 1.15,
+            color: "#f2f2f0",
+            maxWidth: "620px",
+            margin: 0,
           }}
         >
-          Forkast
+          Your sales data is{" "}
+          <em style={{ fontStyle: "italic", color: "#d98a5f" }}>talking</em>. Most
+          owners never hear it.
         </h1>
+
         <p
           style={{
-            color: safeDark ? "rgba(255,255,255,0.4)" : "#888888",
-            fontSize: "13px",
-            margin: "0 0 24px 0",
+            fontSize: "14px",
+            color: "rgba(255,255,255,0.5)",
+            maxWidth: "440px",
+            lineHeight: 1.6,
+            marginTop: "20px",
+            marginBottom: "28px",
           }}
         >
-          {mode === "login"
-            ? "Sign in to your account"
-            : mode === "signup"
-            ? "Create your account"
-            : "Reset your password"}
+          Upload a CSV from your POS. Forkast reads every order, finds the
+          patterns, and tells you what to do about them — in minutes, not
+          spreadsheets.
         </p>
 
-        {mode === "forgot" ? (
-          <div>
-            {!forgotSent ? (
-              <form onSubmit={handleForgotPassword}>
-                <input
-                  type="email"
-                  placeholder="Email address"
-                  value={forgotEmail}
-                  onChange={(e) => setForgotEmail(e.target.value)}
-                  onFocus={() => setFocusedField("forgotEmail")}
-                  onBlur={() => setFocusedField(null)}
-                  style={getInputStyle("forgotEmail")}
-                  required
-                />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            marginBottom: "12px",
+          }}
+        >
+          <Link
+            href="/login"
+            style={{
+              backgroundColor: "#d98a5f",
+              color: "#2c1608",
+              fontSize: "14px",
+              fontWeight: 500,
+              padding: "11px 20px",
+              borderRadius: "8px",
+              textDecoration: "none",
+            }}
+          >
+            Start free &rarr;
+          </Link>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  style={{
-                    width: "100%",
-                    backgroundColor: "#f59e0b",
-                    color: "#ffffff",
-                    border: "none",
-                    padding: "11px",
-                    borderRadius: "8px",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                    cursor: loading ? "not-allowed" : "pointer",
-                    opacity: loading ? 0.7 : 1,
-                    transition: "opacity 0.2s",
-                  }}
-                >
-                  {loading ? "Please wait..." : "Send reset link"}
-                </button>
-              </form>
-            ) : (
+          <button
+            onClick={scrollToComparison}
+            style={{
+              border: "0.5px solid rgba(255,255,255,0.15)",
+              color: "#f2f2f0",
+              fontSize: "14px",
+              padding: "11px 20px",
+              borderRadius: "8px",
+              fontFamily: "monospace",
+              backgroundColor: "transparent",
+              cursor: "pointer",
+            }}
+          >
+            &gt;_ See a sample report
+          </button>
+        </div>
+
+        <div style={{ fontSize: "12px", color: "#d98a5f" }}>
+          &#x2198; free forever for your first 3 reports
+        </div>
+      </section>
+
+      <section id="comparison" style={{ padding: "0 48px 80px" }}>
+        <div
+          style={{
+            fontFamily: "monospace",
+            fontSize: "11px",
+            letterSpacing: "0.08em",
+            color: "#d98a5f",
+            marginBottom: "12px",
+            marginTop: "20px",
+          }}
+        >
+          01 — WHAT CHANGES
+        </div>
+
+        <h2
+          style={{
+            fontFamily: "Georgia, serif",
+            fontSize: "32px",
+            color: "#f2f2f0",
+            maxWidth: "520px",
+            marginBottom: "24px",
+            marginTop: 0,
+          }}
+        >
+          A spreadsheet tells you what happened. Forkast tells you what to do.
+        </h2>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "14px",
+            marginTop: "24px",
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "#111111",
+              border: "0.5px solid rgba(255,255,255,0.08)",
+              borderRadius: "10px",
+              padding: "20px",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                marginBottom: "16px",
+              }}
+            >
               <div
                 style={{
-                  color: "#22c55e",
-                  fontSize: "13px",
-                  textAlign: "center",
-                  marginBottom: "16px",
+                  width: "6px",
+                  height: "6px",
+                  borderRadius: "50%",
+                  backgroundColor: "rgba(255,255,255,0.3)",
+                }}
+              />
+              <span style={{ fontSize: "14px", fontWeight: 500, color: "#f2f2f0" }}>
+                Spreadsheets
+              </span>
+              <span
+                style={{
+                  marginLeft: "auto",
+                  fontFamily: "monospace",
+                  fontSize: "10px",
+                  color: "rgba(255,255,255,0.35)",
+                  border: "0.5px solid rgba(255,255,255,0.12)",
+                  padding: "2px 8px",
+                  borderRadius: "10px",
                 }}
               >
-                If an account exists with this email, a reset link has been sent.
-              </div>
-            )}
+                manual
+              </span>
+            </div>
 
             <div
               style={{
-                marginTop: "20px",
-                textAlign: "center",
-                fontSize: "13px",
+                display: "flex",
+                justifyContent: "space-between",
+                fontSize: "12px",
+                color: "rgba(255,255,255,0.4)",
+                padding: "6px 0",
+                borderBottom: "0.5px solid rgba(255,255,255,0.05)",
               }}
             >
-              <span
-                onClick={() => {
-                  setMode("login");
-                  setForgotSent(false);
-                  setError("");
-                }}
-                style={{ color: "#f59e0b", cursor: "pointer", fontWeight: 500 }}
-              >
-                Back to login
-              </span>
+              <span>Revenue this month</span>
+              <strong style={{ color: "rgba(255,255,255,0.75)", fontWeight: 400 }}>
+                ₹15,98,967
+              </strong>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                fontSize: "12px",
+                color: "rgba(255,255,255,0.4)",
+                padding: "6px 0",
+                borderBottom: "0.5px solid rgba(255,255,255,0.05)",
+              }}
+            >
+              <span>Top dish</span>
+              <strong style={{ color: "rgba(255,255,255,0.75)", fontWeight: 400 }}>
+                unclear
+              </strong>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                fontSize: "12px",
+                color: "rgba(255,255,255,0.4)",
+                padding: "6px 0",
+                borderBottom: "0.5px solid rgba(255,255,255,0.05)",
+              }}
+            >
+              <span>Slow day pattern</span>
+              <strong style={{ color: "rgba(255,255,255,0.75)", fontWeight: 400 }}>
+                not tracked
+              </strong>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                fontSize: "12px",
+                color: "rgba(255,255,255,0.4)",
+                padding: "6px 0",
+              }}
+            >
+              <span>Action to take</span>
+              <strong style={{ color: "rgba(255,255,255,0.75)", fontWeight: 400 }}>
+                —
+              </strong>
             </div>
           </div>
-        ) : successMessage ? (
+
           <div
             style={{
-              color: "#155724",
-              backgroundColor: "#d4edda",
-              border: "1px solid #c3e6cb",
-              padding: "12px",
-              borderRadius: "8px",
-              fontSize: "14px",
-              textAlign: "center",
+              backgroundColor: "#111111",
+              border: "0.5px solid rgba(217,138,95,0.3)",
+              borderRadius: "10px",
+              padding: "20px",
             }}
           >
-            {successMessage}
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit}>
-            {mode === "signup" && (
-              <input
-                type="text"
-                placeholder="Restaurant Name"
-                value={restaurantName}
-                onChange={(e) => setRestaurantName(e.target.value)}
-                onFocus={() => setFocusedField("restaurant")}
-                onBlur={() => setFocusedField(null)}
-                style={getInputStyle("restaurant")}
-                required
-              />
-            )}
-
-            <input
-              type="email"
-              placeholder="Email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onFocus={() => setFocusedField("email")}
-              onBlur={() => setFocusedField(null)}
-              style={getInputStyle("email")}
-              required
-            />
-
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onFocus={() => setFocusedField("password")}
-              onBlur={() => setFocusedField(null)}
-              style={getInputStyle("password")}
-              required
-            />
-
-            {mode === "login" && (
-              <div style={{ textAlign: "right", marginTop: "-4px", marginBottom: "16px" }}>
-                <span
-                  onClick={() => {
-                    setMode("forgot");
-                    setError("");
-                  }}
-                  style={{
-                    color: "#f59e0b",
-                    fontSize: "12px",
-                    cursor: "pointer",
-                    fontWeight: 500,
-                  }}
-                >
-                  Forgot password?
-                </span>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
+            <div
               style={{
-                width: "100%",
-                backgroundColor: "#f59e0b",
-                color: "#ffffff",
-                border: "none",
-                padding: "11px",
-                borderRadius: "8px",
-                fontSize: "14px",
-                fontWeight: 500,
-                cursor: loading ? "not-allowed" : "pointer",
-                opacity: loading ? 0.7 : 1,
-                transition: "opacity 0.2s",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                marginBottom: "16px",
               }}
             >
-              {loading ? "Please wait..." : mode === "login" ? "Sign In" : "Sign Up"}
-            </button>
-          </form>
-        )}
+              <div
+                style={{
+                  width: "6px",
+                  height: "6px",
+                  borderRadius: "50%",
+                  backgroundColor: "#d98a5f",
+                }}
+              />
+              <span style={{ fontSize: "14px", fontWeight: 500, color: "#d98a5f" }}>
+                Forkast
+              </span>
+              <span
+                style={{
+                  marginLeft: "auto",
+                  fontFamily: "monospace",
+                  fontSize: "10px",
+                  color: "#d98a5f",
+                  border: "0.5px solid rgba(217,138,95,0.3)",
+                  padding: "2px 8px",
+                  borderRadius: "10px",
+                }}
+              >
+                automatic
+              </span>
+            </div>
 
-        {error && (
-          <div style={{ color: "#ef4444", fontSize: "12px", marginTop: "8px" }}>
-            {error}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                fontSize: "12px",
+                color: "rgba(255,255,255,0.4)",
+                padding: "6px 0",
+                borderBottom: "0.5px solid rgba(255,255,255,0.05)",
+              }}
+            >
+              <span>Revenue this month</span>
+              <strong style={{ color: "rgba(255,255,255,0.75)", fontWeight: 400 }}>
+                ₹15,98,967
+              </strong>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                fontSize: "12px",
+                color: "rgba(255,255,255,0.4)",
+                padding: "6px 0",
+                borderBottom: "0.5px solid rgba(255,255,255,0.05)",
+              }}
+            >
+              <span>Top dish</span>
+              <strong style={{ color: "rgba(255,255,255,0.75)", fontWeight: 400 }}>
+                Butter Chicken · 14%
+              </strong>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                fontSize: "12px",
+                color: "rgba(255,255,255,0.4)",
+                padding: "6px 0",
+                borderBottom: "0.5px solid rgba(255,255,255,0.05)",
+              }}
+            >
+              <span>Slow day pattern</span>
+              <strong style={{ color: "rgba(255,255,255,0.75)", fontWeight: 400 }}>
+                Mondays −68%
+              </strong>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                fontSize: "12px",
+                color: "rgba(255,255,255,0.4)",
+                padding: "6px 0",
+              }}
+            >
+              <span>Action to take</span>
+              <strong style={{ color: "rgba(255,255,255,0.75)", fontWeight: 400 }}>
+                weekday combo deal
+              </strong>
+            </div>
           </div>
-        )}
+        </div>
+      </section>
 
-        {!successMessage && mode !== "forgot" && (
+      <section style={{ padding: "0 48px 80px" }}>
+        <div
+          style={{
+            fontFamily: "monospace",
+            fontSize: "11px",
+            letterSpacing: "0.08em",
+            color: "#d98a5f",
+            marginBottom: "12px",
+            marginTop: "20px",
+          }}
+        >
+          02 — HOW IT WORKS
+        </div>
+
+        <h2
+          style={{
+            fontFamily: "Georgia, serif",
+            fontSize: "32px",
+            color: "#f2f2f0",
+            maxWidth: "560px",
+            marginBottom: "16px",
+            marginTop: "20px",
+          }}
+        >
+          From CSV to decision in three steps.
+        </h2>
+
+        <p
+          style={{
+            fontSize: "14px",
+            color: "rgba(255,255,255,0.5)",
+            maxWidth: "480px",
+            lineHeight: 1.6,
+            marginBottom: "40px",
+          }}
+        >
+          No POS integration, no IT setup. Export what you already have and upload it.
+        </p>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr",
+            gap: "14px",
+          }}
+        >
           <div
             style={{
-              marginTop: "20px",
-              textAlign: "center",
-              fontSize: "13px",
-              color: safeDark ? "rgba(255,255,255,0.4)" : "#888888",
+              backgroundColor: "#111111",
+              border: "0.5px solid rgba(255,255,255,0.08)",
+              borderRadius: "10px",
+              padding: "24px",
             }}
           >
-            {mode === "login" ? (
-              <span>
-                Don't have an account?{" "}
-                <span
-                  onClick={() => {
-                    setMode("signup");
-                    setError("");
-                  }}
-                  style={{ color: "#f59e0b", cursor: "pointer", fontWeight: 500 }}
-                >
-                  Sign up
-                </span>
-              </span>
-            ) : (
-              <span>
-                Already have an account?{" "}
-                <span
-                  onClick={() => {
-                    setMode("login");
-                    setError("");
-                  }}
-                  style={{ color: "#f59e0b", cursor: "pointer", fontWeight: 500 }}
-                >
-                  Sign in
-                </span>
-              </span>
-            )}
+            <div
+              style={{
+                fontFamily: "monospace",
+                fontSize: "20px",
+                color: "#d98a5f",
+                marginBottom: "16px",
+              }}
+            >
+              01
+            </div>
+            <div
+              style={{
+                fontSize: "15px",
+                fontWeight: 500,
+                color: "#f2f2f0",
+                marginBottom: "8px",
+              }}
+            >
+              Upload your CSV
+            </div>
+            <div
+              style={{
+                fontSize: "13px",
+                color: "rgba(255,255,255,0.5)",
+                lineHeight: 1.6,
+              }}
+            >
+              Export sales data from your POS — Petpooja, Posist, or a plain spreadsheet all work.
+            </div>
           </div>
-        )}
-      </div>
+
+          <div
+            style={{
+              backgroundColor: "#111111",
+              border: "0.5px solid rgba(255,255,255,0.08)",
+              borderRadius: "10px",
+              padding: "24px",
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "monospace",
+                fontSize: "20px",
+                color: "#d98a5f",
+                marginBottom: "16px",
+              }}
+            >
+              02
+            </div>
+            <div
+              style={{
+                fontSize: "15px",
+                fontWeight: 500,
+                color: "#f2f2f0",
+                marginBottom: "8px",
+              }}
+            >
+              Map your columns
+            </div>
+            <div
+              style={{
+                fontSize: "13px",
+                color: "rgba(255,255,255,0.5)",
+                lineHeight: 1.6,
+              }}
+            >
+              Tell Forkast which column is what, once. It remembers the pattern for every future upload.
+            </div>
+          </div>
+
+          <div
+            style={{
+              backgroundColor: "#111111",
+              border: "0.5px solid rgba(255,255,255,0.08)",
+              borderRadius: "10px",
+              padding: "24px",
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "monospace",
+                fontSize: "20px",
+                color: "#d98a5f",
+                marginBottom: "16px",
+              }}
+            >
+              03
+            </div>
+            <div
+              style={{
+                fontSize: "15px",
+                fontWeight: 500,
+                color: "#f2f2f0",
+                marginBottom: "8px",
+              }}
+            >
+              Get your insights
+            </div>
+            <div
+              style={{
+                fontSize: "13px",
+                color: "rgba(255,255,255,0.5)",
+                lineHeight: 1.6,
+              }}
+            >
+              Revenue trends, menu performance, and AI-generated recommendations — ready in under a minute.
+            </div>
+          </div>
+        </div>
+
+        <div style={{ marginTop: "60px" }}>
+          <div
+            style={{
+              fontFamily: "monospace",
+              fontSize: "11px",
+              letterSpacing: "0.08em",
+              color: "#d98a5f",
+            }}
+          >
+            03 — FEATURES
+          </div>
+
+          <h2
+            style={{
+              fontFamily: "Georgia, serif",
+              fontSize: "32px",
+              color: "#f2f2f0",
+              marginTop: "20px",
+              marginBottom: "32px",
+              maxWidth: "500px",
+            }}
+          >
+            Built for how restaurants actually think.
+          </h2>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr 1fr",
+              gap: "12px",
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: "#111111",
+                border: "0.5px solid rgba(255,255,255,0.08)",
+                borderRadius: "10px",
+                padding: "18px",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  color: "#f2f2f0",
+                  marginBottom: "6px",
+                }}
+              >
+                Menu engineering
+              </div>
+              <div
+                style={{
+                  fontSize: "12px",
+                  color: "rgba(255,255,255,0.45)",
+                  lineHeight: 1.5,
+                }}
+              >
+                See which dishes earn their place on the menu, not just which sell most.
+              </div>
+            </div>
+
+            <div
+              style={{
+                backgroundColor: "#111111",
+                border: "0.5px solid rgba(255,255,255,0.08)",
+                borderRadius: "10px",
+                padding: "18px",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  color: "#f2f2f0",
+                  marginBottom: "6px",
+                }}
+              >
+                Period comparison
+              </div>
+              <div
+                style={{
+                  fontSize: "12px",
+                  color: "rgba(255,255,255,0.45)",
+                  lineHeight: 1.5,
+                }}
+              >
+                Put any two reports side by side and see exactly what shifted.
+              </div>
+            </div>
+
+            <div
+              style={{
+                backgroundColor: "#111111",
+                border: "0.5px solid rgba(255,255,255,0.08)",
+                borderRadius: "10px",
+                padding: "18px",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  color: "#f2f2f0",
+                  marginBottom: "6px",
+                }}
+              >
+                PDF export
+              </div>
+              <div
+                style={{
+                  fontSize: "12px",
+                  color: "rgba(255,255,255,0.45)",
+                  lineHeight: 1.5,
+                }}
+              >
+                Turn any report into a clean, shareable document in one click.
+              </div>
+            </div>
+
+            <div
+              style={{
+                backgroundColor: "#111111",
+                border: "0.5px solid rgba(255,255,255,0.08)",
+                borderRadius: "10px",
+                padding: "18px",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  color: "#f2f2f0",
+                  marginBottom: "6px",
+                }}
+              >
+                Dark mode, always
+              </div>
+              <div
+                style={{
+                  fontSize: "12px",
+                  color: "rgba(255,255,255,0.45)",
+                  lineHeight: 1.5,
+                }}
+              >
+                Built dark first, because most restaurant owners check numbers late at night.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section style={{ padding: "100px 48px 60px", textAlign: "center" }}>
+        <h2
+          style={{
+            fontFamily: "Georgia, serif",
+            fontSize: "40px",
+            lineHeight: 1.2,
+            color: "#f2f2f0",
+            margin: 0,
+          }}
+        >
+          Stop guessing.
+          <br />
+          Start knowing.
+        </h2>
+
+        <p
+          style={{
+            fontSize: "14px",
+            color: "rgba(255,255,255,0.5)",
+            marginTop: "16px",
+            marginBottom: "32px",
+          }}
+        >
+          Free for your first 3 reports. No credit card required.
+        </p>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "12px",
+            alignItems: "center",
+          }}
+        >
+          <Link
+            href="/login"
+            style={{
+              backgroundColor: "#d98a5f",
+              color: "#2c1608",
+              fontSize: "14px",
+              fontWeight: 500,
+              padding: "11px 20px",
+              borderRadius: "8px",
+              textDecoration: "none",
+            }}
+          >
+            Start free &rarr;
+          </Link>
+
+          <button
+            style={{
+              border: "0.5px solid rgba(255,255,255,0.15)",
+              color: "#f2f2f0",
+              fontSize: "14px",
+              padding: "11px 20px",
+              borderRadius: "8px",
+              backgroundColor: "transparent",
+              cursor: "pointer",
+            }}
+          >
+            Read the docs
+          </button>
+        </div>
+      </section>
+
+      <footer
+        style={{
+          borderTop: "0.5px solid rgba(255,255,255,0.08)",
+          padding: "40px 48px",
+        }}
+      >
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "2fr 1fr 1fr 1fr",
+            gap: "24px",
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontSize: "15px",
+                fontWeight: 500,
+                color: "#f2f2f0",
+                marginBottom: "8px",
+              }}
+            >
+              Forkast
+            </div>
+            <div
+              style={{
+                fontSize: "13px",
+                color: "rgba(255,255,255,0.4)",
+                lineHeight: 1.5,
+                maxWidth: "220px",
+              }}
+            >
+              Restaurant analytics, made simple.
+            </div>
+          </div>
+
+          <div>
+            <div
+              style={{
+                fontFamily: "monospace",
+                fontSize: "10px",
+                letterSpacing: "0.06em",
+                color: "rgba(255,255,255,0.3)",
+                marginBottom: "12px",
+              }}
+            >
+              PRODUCT
+            </div>
+            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
+              Features
+            </div>
+            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
+              Pricing
+            </div>
+            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
+              Changelog
+            </div>
+          </div>
+
+          <div>
+            <div
+              style={{
+                fontFamily: "monospace",
+                fontSize: "10px",
+                letterSpacing: "0.06em",
+                color: "rgba(255,255,255,0.3)",
+                marginBottom: "12px",
+              }}
+            >
+              COMPANY
+            </div>
+            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
+              About
+            </div>
+            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
+              Blog
+            </div>
+            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
+              Contact
+            </div>
+          </div>
+
+          <div>
+            <div
+              style={{
+                fontFamily: "monospace",
+                fontSize: "10px",
+                letterSpacing: "0.06em",
+                color: "rgba(255,255,255,0.3)",
+                marginBottom: "12px",
+              }}
+            >
+              LEGAL
+            </div>
+            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
+              Privacy
+            </div>
+            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
+              Terms
+            </div>
+          </div>
+        </div>
+
+        <div
+          style={{
+            marginTop: "32px",
+            paddingTop: "24px",
+            borderTop: "0.5px solid rgba(255,255,255,0.06)",
+            display: "flex",
+            justifyContent: "space-between",
+            fontSize: "12px",
+            color: "rgba(255,255,255,0.3)",
+          }}
+        >
+          <div>© 2026 Forkast. All rights reserved.</div>
+          <div>Made with Antigravity</div>
+        </div>
+      </footer>
     </div>
   );
 }

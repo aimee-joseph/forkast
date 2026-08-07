@@ -17,7 +17,7 @@ export default function DashboardLayout({
     async function checkSession() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        router.push("/");
+        router.push("/login");
       } else {
         setLoading(false);
       }

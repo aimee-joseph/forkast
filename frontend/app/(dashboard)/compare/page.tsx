@@ -62,7 +62,7 @@ export default function ComparePage() {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session?.user) {
-          router.push("/");
+          router.push("/login");
           return;
         }
         const reportsData = await getReports(session.user.id);

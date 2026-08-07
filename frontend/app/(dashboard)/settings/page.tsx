@@ -19,7 +19,7 @@ export default function SettingsPage() {
     async function loadSession() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user) {
-        router.push("/");
+        router.push("/login");
         return;
       }
       setEmail(session.user.email || "");

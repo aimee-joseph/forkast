@@ -48,12 +48,14 @@ export default function UploadPage() {
   useEffect(() => {
     async function getUserId() {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        setUserId(session.user.id);
+      if (!session?.user) {
+        router.push("/login");
+        return;
       }
+      setUserId(session.user.id);
     }
     getUserId();
-  }, []);
+  }, [router]);
 
   const handleFileChange = async (selectedFile: File) => {
     if (!selectedFile) return;

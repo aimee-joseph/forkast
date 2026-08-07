@@ -68,7 +68,7 @@ export default function ReportDashboard() {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session?.user) {
-          router.push("/");
+          router.push("/login");
           return;
         }
         setUserId(session.user.id);
