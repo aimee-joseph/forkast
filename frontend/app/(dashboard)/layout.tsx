@@ -12,17 +12,24 @@ export default function DashboardLayout({
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [slowLoad, setSlowLoad] = useState(false);
 
   useEffect(() => {
+    const slowTimer = setTimeout(() => setSlowLoad(true), 4000);
     async function checkSession() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        router.push("/login");
-      } else {
-        setLoading(false);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          router.push("/login");
+        } else {
+          setLoading(false);
+        }
+      } finally {
+        clearTimeout(slowTimer);
       }
     }
     checkSession();
+    return () => clearTimeout(slowTimer);
   }, [router]);
 
   if (loading) {
@@ -33,13 +40,25 @@ export default function DashboardLayout({
           height: "100vh",
           backgroundColor: "var(--bg-page)",
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           color: "var(--text-muted)",
           fontSize: "13px",
         }}
       >
-        Loading...
+        <span>Loading...</span>
+        {slowLoad && (
+          <div
+            style={{
+              fontSize: "11px",
+              color: "var(--text-faint)",
+              marginTop: "8px",
+            }}
+          >
+            Waking up the server, this can take a few seconds...
+          </div>
+        )}
       </div>
     );
   }

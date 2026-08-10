@@ -29,6 +29,11 @@ export default function Home() {
     checkSession();
   }, [router]);
 
+  useEffect(() => {
+    fetch(process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000")
+      .catch(() => {});
+  }, []);
+
   const getFriendlyError = (message: string): string => {
     if (message.includes("Invalid login credentials"))
       return "Incorrect email or password. Please try again.";
