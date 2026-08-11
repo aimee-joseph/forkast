@@ -3,10 +3,6 @@
 import Link from "next/link";
 
 export default function Home() {
-  const scrollToComparison = () => {
-    document.getElementById("comparison")?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <div
       style={{
@@ -31,7 +27,6 @@ export default function Home() {
 
         <div style={{ display: "flex", gap: "28px", fontSize: "13px", color: "rgba(255,255,255,0.5)" }}>
           <span>Product</span>
-          <span>Pricing</span>
           <span>Docs</span>
         </div>
 
@@ -47,7 +42,7 @@ export default function Home() {
             textDecoration: "none",
           }}
         >
-          Start free
+          Get Started
         </Link>
       </nav>
 
@@ -102,28 +97,12 @@ export default function Home() {
               textDecoration: "none",
             }}
           >
-            Start free &rarr;
+            Get Started &rarr;
           </Link>
-
-          <button
-            onClick={scrollToComparison}
-            style={{
-              border: "0.5px solid rgba(255,255,255,0.15)",
-              color: "#f2f2f0",
-              fontSize: "14px",
-              padding: "11px 20px",
-              borderRadius: "8px",
-              fontFamily: "monospace",
-              backgroundColor: "transparent",
-              cursor: "pointer",
-            }}
-          >
-            &gt;_ See a sample report
-          </button>
         </div>
 
         <div style={{ fontSize: "12px", color: "#d98a5f" }}>
-          &#x2198; free forever for your first 3 reports
+          &#x2198; free &amp; instant restaurant analytics
         </div>
       </section>
 
@@ -714,7 +693,7 @@ export default function Home() {
             marginBottom: "32px",
           }}
         >
-          Free for your first 3 reports. No credit card required.
+          No setup or credit card required. Upload your CSV and get insights.
         </p>
 
         <div
@@ -737,7 +716,7 @@ export default function Home() {
               textDecoration: "none",
             }}
           >
-            Start free &rarr;
+            Get Started &rarr;
           </Link>
 
           <button
@@ -806,9 +785,6 @@ export default function Home() {
             </div>
             <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
               Features
-            </div>
-            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
-              Pricing
             </div>
             <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
               Changelog
