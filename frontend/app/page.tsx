@@ -781,7 +781,7 @@ export default function Home() {
                 marginBottom: "12px",
               }}
             >
-              PRODUCT
+              PROJECT
             </div>
             <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
               Features
@@ -801,16 +801,27 @@ export default function Home() {
                 marginBottom: "12px",
               }}
             >
-              COMPANY
+              DEVELOPER
             </div>
-            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
-              About
+            <div style={{ fontSize: "13px", marginBottom: "8px" }}>
+              <a
+                href="https://aimee-joseph.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
+              >
+                Portfolio
+              </a>
             </div>
-            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
-              Blog
-            </div>
-            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
-              Contact
+            <div style={{ fontSize: "13px", marginBottom: "8px" }}>
+              <a
+                href="https://www.linkedin.com/in/aimeesjoseph/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
+              >
+                LinkedIn
+              </a>
             </div>
           </div>
 
