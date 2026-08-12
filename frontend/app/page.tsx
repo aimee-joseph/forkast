@@ -26,7 +26,12 @@ export default function Home() {
         </div>
 
         <div style={{ display: "flex", gap: "28px", fontSize: "13px", color: "rgba(255,255,255,0.5)" }}>
-          <span>Product</span>
+          <span
+            onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })}
+            style={{ cursor: "pointer" }}
+          >
+            Features
+          </span>
           <span>Docs</span>
         </div>
 
@@ -519,7 +524,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div style={{ marginTop: "60px" }}>
+        <div id="features" style={{ marginTop: "60px" }}>
           <div
             style={{
               fontFamily: "monospace",
@@ -783,11 +788,23 @@ export default function Home() {
             >
               PROJECT
             </div>
-            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
-              Features
+            <div style={{ fontSize: "13px", marginBottom: "8px" }}>
+              <span
+                onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })}
+                style={{ color: "rgba(255,255,255,0.5)", cursor: "pointer" }}
+              >
+                Features
+              </span>
             </div>
-            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
-              Changelog
+            <div style={{ fontSize: "13px", marginBottom: "8px" }}>
+              <a
+                href="https://github.com/aimee-joseph/forkast"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
+              >
+                Changelog
+              </a>
             </div>
           </div>
 
@@ -837,11 +854,21 @@ export default function Home() {
             >
               LEGAL
             </div>
-            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
-              Privacy
+            <div style={{ fontSize: "13px", marginBottom: "8px" }}>
+              <Link
+                href="/privacy"
+                style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
+              >
+                Privacy
+              </Link>
             </div>
-            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)", marginBottom: "8px" }}>
-              Terms
+            <div style={{ fontSize: "13px", marginBottom: "8px" }}>
+              <Link
+                href="/terms"
+                style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none" }}
+              >
+                Terms
+              </Link>
             </div>
           </div>
         </div>
