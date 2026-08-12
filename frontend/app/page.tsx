@@ -32,7 +32,9 @@ export default function Home() {
           >
             Features
           </span>
-          <span>Docs</span>
+          <Link href="/docs" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none" }}>
+            Docs
+          </Link>
         </div>
 
         <Link
@@ -724,19 +726,20 @@ export default function Home() {
             Get Started &rarr;
           </Link>
 
-          <button
+          <Link
+            href="/docs"
             style={{
               border: "0.5px solid rgba(255,255,255,0.15)",
               color: "#f2f2f0",
               fontSize: "14px",
               padding: "11px 20px",
               borderRadius: "8px",
-              backgroundColor: "transparent",
-              cursor: "pointer",
+              textDecoration: "none",
+              display: "inline-block",
             }}
           >
             Read the docs
-          </button>
+          </Link>
         </div>
       </section>
 
